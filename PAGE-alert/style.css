@@ -1,0 +1,159 @@
+.emergency {
+  display: flex;
+  flex-direction: column;
+  width: 440px;
+  height: 956px;
+  align-items: center;
+  justify-content: center;
+  gap: 64px;
+  padding: 72px 48px 112px;
+  position: relative;
+  background-color: var(--quickresponseicon);
+}
+
+.emergency .text-title {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  font-family: var(--header-font-family);
+  font-weight: var(--header-font-weight);
+  color: #000000;
+  font-size: var(--header-font-size);
+  text-align: center;
+  letter-spacing: var(--header-letter-spacing);
+  line-height: var(--header-line-height);
+  font-style: var(--header-font-style);
+}
+
+.emergency .paragraph-container {
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+  height: 300px;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 34px 18px;
+  position: relative;
+  background-color: var(--primary);
+  border-radius: 50%;
+  box-shadow: 0px 3.36px 8.97px #00000026;
+}
+
+.emergency .text-label {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  font-family: var(--header-2-font-family);
+  font-weight: var(--header-2-font-weight);
+  color: #ffffff;
+  font-size: var(--header-2-font-size);
+  text-align: center;
+  letter-spacing: var(--header-2-letter-spacing);
+  line-height: var(--header-2-line-height);
+  font-style: var(--header-2-font-style);
+}
+
+.emergency .text-explanation {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: min(220px, 100%);
+  font-family: var(--subtext-font-family);
+  font-weight: var(--subtext-font-weight);
+  color: #ffffffd9;
+  font-size: var(--subtext-font-size);
+  text-align: center;
+  letter-spacing: var(--subtext-letter-spacing);
+  line-height: var(--subtext-line-height);
+  font-style: var(--subtext-font-style);
+}
+
+.emergency .frame {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+.emergency .not-sure-it-s-an {
+  position: relative;
+  align-self: stretch;
+  height: 35px;
+  margin-top: -1px;
+  text-shadow: 0px 4px 4px #0000001a;
+  font-family: var(--subtext-font-family);
+  font-weight: var(--subtext-font-weight);
+  color: var(--primary);
+  font-size: var(--subtext-font-size);
+  text-align: center;
+  letter-spacing: var(--subtext-letter-spacing);
+  line-height: var(--subtext-line-height);
+  text-decoration: underline;
+  font-style: var(--subtext-font-style);
+}
+
+.emergency .text-reassurance {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  font-family: var(--subtext-font-family);
+  font-weight: var(--subtext-font-weight);
+  color: var(--typographymuted);
+  font-size: var(--subtext-font-size);
+  text-align: center;
+  letter-spacing: var(--subtext-letter-spacing);
+  line-height: var(--subtext-line-height);
+  font-style: var(--subtext-font-style);
+}
+
+
+
+/* Original CSS is injected before these refactor overrides. */
+
+.emergency {
+  min-height: 100vh;
+  max-width: 440px;
+  width: 100%;
+  height: auto;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.emergency .paragraph-container {
+  flex: 0 0 300px;
+  max-width: 100%;
+  aspect-ratio: 1;
+  height: auto;
+}
+
+.emergency .text-explanation,
+.emergency .not-sure-it-s-an,
+.emergency .text-reassurance {
+  margin-bottom: 0;
+}
+
+/* Bottom tab bar removed */
+
+@media (max-width: 440px) {
+  .emergency {
+    gap: clamp(40px, 14.5vw, 64px);
+    padding: 72px clamp(24px, 10.9vw, 48px) 112px;
+  }
+
+  .emergency .paragraph-container {
+    width: min(300px, 100%);
+  }
+}
