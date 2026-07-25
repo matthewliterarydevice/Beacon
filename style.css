@@ -96,8 +96,6 @@
   display: list-item;
 }
  
-/* TeleportHQ display helper removed */
- 
 .thq-input {
   color: var(--dl-color-theme-neutral-dark);
   cursor: auto;
@@ -199,34 +197,34 @@
  
 .thq-heading-1 {
   font-size: 48px;
-  font-family: STIX Two Text;
+  font-family: Inter;
   font-weight: 700;
   line-height: 1.5;
 }
  
 .thq-heading-2 {
   font-size: 35px;
-  font-family: STIX Two Text;
+  font-family: Inter;
   font-weight: 600;
   line-height: 1.5;
 }
  
 .thq-heading-3 {
   font-size: 26px;
-  font-family: STIX Two Text;
+  font-family: Inter;
   font-weight: 600;
   line-height: 1.5;
 }
  
 .thq-body-large {
   font-size: 18px;
-  font-family: Noto Sans;
+  font-family: Inter;
   line-height: 1.5;
 }
  
 .thq-body-small {
   font-size: 16px;
-  font-family: Noto Sans;
+  font-family: Inter;
   line-height: 1.5;
 }
  
