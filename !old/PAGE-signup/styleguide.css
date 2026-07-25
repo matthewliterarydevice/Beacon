@@ -1,0 +1,63 @@
+:root {
+  --primary: rgba(0, 123, 255, 1);
+  --secondary: rgba(0, 183, 129, 1);
+  --quickresponseicon: rgba(248, 249, 250, 1);
+  --accent: rgba(255, 193, 7, 1);
+  --border: rgba(233, 236, 239, 1);
+  --success: rgba(40, 167, 69, 1);
+  --critical: rgba(220, 53, 69, 1);
+  --backgroundsurface-background: rgba(255, 255, 255, 1);
+  --typographyprimary-text: rgba(33, 37, 41, 1);
+  --typographysecondary-text: rgba(73, 80, 87, 1);
+  --typographymuted: rgba(144, 150, 157, 1);
+  --flowkitpurple: rgba(123, 97, 255, 1);
+  --flowkitcharcoal: rgba(34, 34, 34, 1);
+  --flowkitred: rgba(252, 85, 85, 1);
+  --flowkitgreen: rgba(41, 204, 106, 1);
+  --flowkitblue: rgba(0, 153, 255, 1);
+  --flowkitwhite: rgba(255, 255, 255, 1);
+
+  --header-font-family: "Inter";
+  --header-font-weight: 500;
+  --header-font-size: 40px;
+  --header-letter-spacing: 0px;
+  --header-line-height: normal;
+  --header-font-style: normal;
+
+  --text-font-family: "Inter";
+  --text-font-weight: 400;
+  --text-font-size: 16px;
+  --text-letter-spacing: 0px;
+  --text-line-height: 24px;
+  --text-font-style: normal;
+
+  --subtext-font-family: "Inter";
+  --subtext-font-weight: 400;
+  --subtext-font-size: 16px;
+  --subtext-letter-spacing: 0px;
+  --subtext-line-height: normal;
+  --subtext-font-style: normal;
+
+  --header-2-font-family: "Inter";
+  --header-2-font-weight: 600;
+  --header-2-font-size: 32px;
+  --header-2-letter-spacing: 0px;
+  --header-2-line-height: normal;
+  --header-2-font-style: normal;
+
+  --mini-text-font-family: "Inter";
+  --mini-text-font-weight: 400;
+  --mini-text-font-size: 12px;
+  --mini-text-letter-spacing: 0px;
+  --mini-text-line-height: 24px;
+  --mini-text-font-style: normal;
+
+  --normal-bold-font-family: "Inter";
+  --normal-bold-font-weight: 700;
+  --normal-bold-font-size: 16px;
+  --normal-bold-letter-spacing: 0px;
+  --normal-bold-line-height: 24px;
+  --normal-bold-font-style: normal;
+
+  --variable-collection-smth: rgba(51, 51, 51, 1);
+}

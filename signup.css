@@ -1,0 +1,283 @@
+.sign-up-container1 {
+  width: 100%;
+  display: flex;
+  min-height: 100vh;
+  align-items: center;
+  flex-direction: column;
+}
+ 
+.sign-up-thq-signup-elm {
+  width: 100%;
+  height: auto;
+  display: flex;
+  padding: 72px 48px;
+  align-items: center;
+  flex-shrink: 0;
+  flex-direction: column;
+  background-color: var(--dl-color-default-quickresponseicon);
+}
+ 
+.sign-up-thq-joinasaresponder-elm {
+  gap: 48px;
+  display: flex;
+  align-self: stretch;
+  align-items: flex-start;
+  flex-direction: column;
+}
+ 
+.sign-up-thq-container-header-elm {
+  gap: 24px;
+  display: flex;
+  align-self: stretch;
+  align-items: center;
+  flex-direction: column;
+}
+ 
+.sign-up-thq-text-elm1 {
+  color: rgba(0, 0, 0, 1);
+  width: 326px;
+  height: auto;
+  font-size: 40px;
+  font-style: Medium;
+  text-align: center;
+  font-family: Inter;
+  font-weight: 500;
+  line-height: 43.78109359741211px;
+  font-stretch: normal;
+  text-decoration: none;
+}
+ 
+.sign-up-thq-form-elm {
+  gap: 32px;
+  display: flex;
+  align-self: stretch;
+  align-items: flex-start;
+  flex-direction: column;
+}
+ 
+.sign-up-thq-text-elm2 {
+  color: rgba(0, 0, 0, 1);
+  height: auto;
+  font-size: 16px;
+  align-self: stretch;
+  font-style: Semi Bold;
+  text-align: left;
+  font-family: Inter;
+  font-weight: 700;
+  line-height: 24px;
+  font-stretch: normal;
+  text-decoration: none;
+}
+ 
+.sign-up-thq-text-elm3 {
+  font-weight: 700;
+}
+ 
+.sign-up-thq-input-elm {
+  gap: 16px;
+  display: flex;
+  align-self: stretch;
+  align-items: flex-start;
+  flex-direction: column;
+}
+ 
+.sign-up-thq-invitecode-elm1 {
+  gap: 4px;
+  width: 344px;
+  display: flex;
+  align-items: flex-start;
+  flex-shrink: 0;
+  flex-direction: column;
+}
+ 
+.sign-up-thq-text-elm5 {
+  color: rgba(0, 0, 0, 1);
+  width: 327px;
+  height: auto;
+  text-align: left;
+  line-height: 24px;
+}
+ 
+.sign-up-thq-textinput-elm1 {
+  gap: 4px;
+  color: rgba(144, 150, 156, 1);
+  display: flex;
+  padding: 12px;
+  font-size: 16px;
+  align-self: stretch;
+  text-align: left;
+  align-items: center;
+  flex-shrink: 0;
+  font-family: Inter;
+  font-weight: 400;
+  border-color: rgba(233, 236, 239, 1);
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 8px;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 1);
+}
+ 
+.sign-up-thq-invitecode-elm2 {
+  gap: 4px;
+  width: 344px;
+  display: flex;
+  align-items: flex-start;
+  flex-shrink: 0;
+  flex-direction: column;
+}
+ 
+.sign-up-thq-text-elm6 {
+  color: rgba(0, 0, 0, 1);
+  width: 327px;
+  height: auto;
+  text-align: left;
+  line-height: 24px;
+}
+ 
+.sign-up-thq-textinput-elm2 {
+  gap: 4px;
+  color: rgba(144, 150, 156, 1);
+  display: flex;
+  padding: 12px;
+  font-size: 16px;
+  align-self: stretch;
+  text-align: left;
+  align-items: center;
+  flex-shrink: 0;
+  font-family: Inter;
+  font-weight: 400;
+  border-color: rgba(233, 236, 239, 1);
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 8px;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 1);
+}
+ 
+.sign-up-thq-invitecode-elm3 {
+  gap: 4px;
+  width: 344px;
+  display: flex;
+  align-items: flex-start;
+  flex-shrink: 0;
+  flex-direction: column;
+}
+ 
+.sign-up-thq-text-elm7 {
+  color: rgba(0, 0, 0, 1);
+  width: 327px;
+  height: auto;
+  text-align: left;
+  line-height: 24px;
+}
+ 
+.sign-up-thq-textinput-elm3 {
+  gap: 4px;
+  color: rgba(144, 150, 156, 1);
+  display: flex;
+  padding: 12px;
+  font-size: 16px;
+  align-self: stretch;
+  text-align: left;
+  align-items: center;
+  flex-shrink: 0;
+  font-family: Inter;
+  font-weight: 400;
+  border-color: rgba(233, 236, 239, 1);
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 8px;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 1);
+}
+ 
+.sign-up-thq-button-elm1 {
+  gap: 4px;
+  display: flex;
+  flex-grow: 1;
+  align-self: stretch;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+}
+ 
+.sign-up-thq-container-primary-action-elm {
+  display: flex;
+  padding: 16px;
+  overflow: hidden;
+  align-self: stretch;
+  align-items: center;
+  flex-shrink: 0;
+  border-radius: 8px;
+  justify-content: center;
+  background-color: var(--dl-color-default-secondary);
+}
+ 
+.sign-up-thq-button-elm2 {
+  gap: 11.220657348632812px;
+  display: flex;
+  padding: 11.220657348632812px;
+  overflow: hidden;
+  flex-grow: 1;
+  align-items: center;
+  border-radius: 13.464789390563965px;
+  justify-content: center;
+  background-color: var(--dl-color-default-secondary);
+}
+ 
+.sign-up-thq-text-elm8 {
+  color: rgba(255, 255, 255, 1);
+  width: 203px;
+  height: auto;
+  font-size: 16px;
+  font-style: Semi Bold;
+  text-align: center;
+  font-family: Inter;
+  font-weight: 700;
+  line-height: 26.92957878112793px;
+  font-stretch: normal;
+  text-decoration: none;
+}
+ 
+.sign-up-link {
+  display: contents;
+}
+ 
+.sign-up-container2 {
+  right: 50px;
+  border: 1px solid #ffffff5c;
+  bottom: 30px;
+  display: flex;
+  z-index: 22;
+  position: fixed;
+  box-shadow: 5px 5px 10px 0px rgba(31, 31, 31, 0.4);
+  min-height: auto;
+  align-items: center;
+  padding-top: 8px;
+  padding-left: 12px;
+  border-radius: 8px;
+  padding-right: 12px;
+  padding-bottom: 8px;
+  backdrop-filter: blur(6px);
+  background-color: rgba(41, 41, 41, 0.41);
+}
+ 
+.sign-up-icon1 {
+  width: 24px;
+  margin-right: 4px;
+}
+ 
+.sign-up-text3 {
+  color: white;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 24px;
+}
+ 
+@media(max-width: 479px) {
+  .sign-up-thq-signup-elm {
+    height: 1001px;
+  }
+}

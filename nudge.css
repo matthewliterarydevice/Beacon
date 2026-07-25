@@ -1,0 +1,223 @@
+.nudge-container1 {
+  width: 100%;
+  display: flex;
+  overflow: auto;
+  min-height: 100vh;
+  align-items: center;
+  flex-direction: column;
+}
+ 
+.nudge-thq-nudge-elm {
+  gap: 64px;
+  width: 100%;
+  height: auto;
+  display: flex;
+  padding: 72px 48px 112px;
+  align-items: center;
+  flex-shrink: 0;
+  flex-direction: column;
+  background-color: var(--dl-color-default-quickresponseicon);
+}
+ 
+.nudge-thq-text-elm10 {
+  color: rgba(0, 0, 0, 1);
+  height: auto;
+  align-self: stretch;
+  text-align: center;
+  line-height: normal;
+}
+ 
+.nudge-thq-paragraphcontainer-elm {
+  gap: 8px;
+  width: 300px;
+  height: 300px;
+  display: flex;
+  padding: 48px 16px;
+  z-index: 1;
+  box-shadow: 0px 3.3623225688934326px 8.966193199157715px 0px rgba(0, 0, 0, 0.15000000596046448) ;
+  align-items: center;
+  flex-shrink: 0;
+  border-radius: 11207.7412109375px;
+  flex-direction: column;
+  justify-content: center;
+  background-color: var(--dl-color-default-primary);
+}
+ 
+.nudge-thq-text-elm11 {
+  color: rgba(255, 255, 255, 1);
+  height: auto;
+  text-align: center;
+  line-height: normal;
+}
+ 
+.nudge-thq-text-elm12 {
+  color: rgba(255, 255, 255, 0.8500000238418579);
+  width: 151px;
+  height: auto;
+  text-align: center;
+  line-height: normal;
+}
+ 
+.nudge-thq-frame27-elm {
+  gap: 16px;
+  width: 440px;
+  height: 377px;
+  display: flex;
+  padding: 32px 48px;
+  z-index: 3;
+  overflow: hidden;
+  align-items: flex-start;
+  flex-shrink: 0;
+  flex-direction: column;
+  background-color: rgba(255, 255, 255, 1);
+}
+ 
+.nudge-thq-frame29-elm {
+  gap: 4px;
+  display: flex;
+  align-self: stretch;
+  align-items: flex-start;
+  flex-shrink: 0;
+}
+ 
+.nudge-thq-text-elm13 {
+  color: rgba(0, 0, 0, 1);
+  height: auto;
+  flex-grow: 1;
+  text-align: left;
+  line-height: normal;
+}
+ 
+.nudge-thq-frame32-elm {
+  gap: 16px;
+  display: flex;
+  align-self: stretch;
+  align-items: flex-start;
+  flex-shrink: 0;
+}
+ 
+.nudge-thq-frame30-elm {
+  gap: 4px;
+  display: flex;
+  padding: 8px;
+  flex-grow: 1;
+  align-items: center;
+  border-color: rgba(206, 206, 206, 1);
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 8px;
+  justify-content: center;
+  background-color: var(--dl-color-default-primary);
+}
+ 
+.nudge-thq-text-elm14 {
+  color: rgba(255, 255, 255, 1);
+  height: auto;
+  font-size: 32px;
+  font-style: Medium;
+  text-align: center;
+  font-family: Inter;
+  font-weight: 500;
+  line-height: normal;
+  font-stretch: normal;
+  text-decoration: none;
+}
+ 
+.nudge-thq-frame31-elm {
+  gap: 4px;
+  display: flex;
+  padding: 8px;
+  flex-grow: 1;
+  align-self: stretch;
+  align-items: center;
+  border-color: rgba(206, 206, 206, 1);
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 8px;
+  justify-content: center;
+  background-color: rgba(239, 239, 239, 1);
+}
+ 
+.nudge-thq-text-elm15 {
+  color: rgba(0, 0, 0, 1);
+  height: auto;
+  font-size: 32px;
+  font-style: Medium;
+  text-align: center;
+  font-family: Inter;
+  font-weight: 500;
+  line-height: normal;
+  font-stretch: normal;
+  text-decoration: none;
+}
+ 
+.nudge-thq-text-elm16 {
+  color: rgba(0, 0, 0, 1);
+  height: auto;
+  font-size: 16px;
+  align-self: stretch;
+  font-style: Bold;
+  text-align: left;
+  font-family: Inter;
+  font-weight: 700;
+  line-height: 24px;
+  font-stretch: normal;
+  text-decoration: none;
+}
+ 
+.nudge-thq-text-elm17 {
+  font-weight: 700;
+}
+ 
+.nudge-thq-text-elm20 {
+  color: var(--dl-color-typography-muted);
+  height: auto;
+  align-self: stretch;
+  text-align: left;
+  line-height: 24px;
+}
+ 
+.nudge-link {
+  display: contents;
+}
+ 
+.nudge-container2 {
+  right: 50px;
+  border: 1px solid #ffffff5c;
+  bottom: 30px;
+  display: flex;
+  z-index: 22;
+  position: fixed;
+  box-shadow: 5px 5px 10px 0px rgba(31, 31, 31, 0.4);
+  min-height: auto;
+  align-items: center;
+  padding-top: 8px;
+  padding-left: 12px;
+  border-radius: 8px;
+  padding-right: 12px;
+  padding-bottom: 8px;
+  backdrop-filter: blur(6px);
+  background-color: rgba(41, 41, 41, 0.41);
+}
+ 
+.nudge-icon1 {
+  width: 24px;
+  margin-right: 4px;
+}
+ 
+.nudge-text3 {
+  color: white;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 24px;
+}
+ 
+@media(max-width: 479px) {
+  .nudge-thq-nudge-elm {
+    gap: 128;
+  }
+  .nudge-thq-frame27-elm {
+    justify-content: flex-start;
+  }
+}

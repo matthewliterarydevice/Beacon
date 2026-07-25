@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="globals.css">
+<link rel="stylesheet" href="styleguide.css">
+<link rel="stylesheet" href="style.css">
+<title>Join as a Responder</title>
+</head>
+<body>
+<main class="sign-up">
+<section class="join-as-a-responder" aria-labelledby="sign-up-title">
+<header class="container-header">
+<h1 class="learn" id="sign-up-title">Join as a responder</h1>
+</header>
+<form class="form" id="responder-sign-up" aria-describedby="sign-up-guidance">
+<p class="text" id="sign-up-guidance">
+<strong class="text-wrapper">
+To sign up, you'll need an invite code from a naloxone training session or your outreach coordinator.<br><br>
+</strong>
+<span class="span">
+As a responder, you’ll receive notifications via the app or SMS on potential overdoses in Vancouver, as well as the ability to accept alerts.
+</span>
+</p>
+<div class="input">
+<div class="invite-code">
+<label class="div" for="invite-code">Invite code</label>
+<input
+  class="text-input-2"
+  id="invite-code"
+  name="inviteCode"
+  type="text"
+  placeholder="E.G. UGM-7X2K"
+  autocomplete="off"
+  autocapitalize="characters"
+  spellcheck="false"
+  required
+>
+</div>
+<div class="invite-code">
+<label class="div" for="input-1">Name</label>
+<input
+  class="text-input-2"
+  id="input-1"
+  name="name"
+  type="text"
+  placeholder="Your Name"
+  autocomplete="name"
+  required
+>
+</div>
+<div class="invite-code">
+<label class="div" for="phone-number">Phone # (for alerts only)</label>
+<input
+  class="text-input-2"
+  id="phone-number"
+  name="phone"
+  type="tel"
+  placeholder="123-456-7890"
+  autocomplete="tel"
+  inputmode="tel"
+  required
+>
+</div>
+</form>
+</section>
+<div class="button">
+  <button class="container" type="submit" form="responder-sign-up">
+    <span class="text-label">Sign Up / Log in</span>
+  </button>
+</div>
+</main>
+<script src="global.js"></script>
+</body>
+</html>
