@@ -50,7 +50,7 @@
           <span class="emergency-thq-text-elm1 Header">
             Emergency Assistance
           </span>
-          <a href="help.html" class="emergency-link">
+          <a href="help.html" id="holdForHelpButton" class="emergency-link">
             <div class="emergency-thq-paragraphcontainer-elm">
               <span class="emergency-thq-text-elm2 Header2">Hold for help</span>
               <span class="emergency-thq-text-elm3 Subtext">
@@ -59,7 +59,7 @@
             </div>
           </a>
           <div class="emergency-thq-frame1-elm">
-            <a href="nudge.html" class="emergency-link emergency-link-text">
+            <a href="nudge.html" id="notSureButton" class="emergency-link emergency-link-text">
               <span class="emergency-thq-text-elm4 Subtext">
                 Not sure it's an overdose? Check the signs (30 sec)
               </span>
@@ -76,5 +76,13 @@
         href="https://beacon-41g3fo.teleporthq.site/emergency"
       />
     </div>
+    <script>
+      document.getElementById('holdForHelpButton').addEventListener('click', function () {
+        console.log('Hold for help pressed');
+      });
+      document.getElementById('notSureButton').addEventListener('click', function () {
+        console.log('Not sure it\'s an overdose pressed');
+      });
+    </script>
   </body>
 </html>
