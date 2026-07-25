@@ -5,7 +5,7 @@
   align-items: center;
   flex-direction: column;
 }
- 
+
 .onboarding-thq-onboarding-elm {
   gap: 40px;
   width: 100%;
@@ -19,24 +19,24 @@
   justify-content: center;
   background-color: var(--dl-color-default-quickresponseicon);
 }
- 
+
 .onboarding-thq-container-main-elm {
   display: flex;
   padding: 8px 0;
   align-items: center;
 }
- 
+
 .onboarding-thq-icon-elm {
-  width: min(142px, 100%);
+  width: clamp(90px, 20vw, 142px);
   max-width: 142px;
   aspect-ratio: 142 / 169;
   display: flex;
   position: relative;
   align-items: center;
   justify-content: center;
-  flex-shrink: 1;
+  flex-shrink: 0;
 }
- 
+
 .onboarding-thq-pin1-elm {
   position: absolute;
   top: 0;
@@ -46,23 +46,27 @@
   max-width: 100%;
   object-fit: contain;
 }
- 
+
 .onboarding-thq-circle1-elm {
   position: absolute;
   top: 23%;
   left: 27%;
   width: 44%;
   height: auto;
+  object-fit: contain;
+  max-width: 100%;
 }
- 
+
 .onboarding-thq-heart1-elm {
   position: absolute;
   top: 33%;
   left: 35%;
   width: 31%;
   height: auto;
+  object-fit: contain;
+  max-width: 100%;
 }
- 
+
 .onboarding-thq-text-elm1 {
   color: rgba(0, 0, 0, 1);
   height: auto;
@@ -76,7 +80,7 @@
   font-stretch: normal;
   text-decoration: none;
 }
- 
+
 .onboarding-thq-explanation-elm {
   gap: 12px;
   display: flex;
@@ -84,7 +88,7 @@
   align-items: flex-start;
   flex-direction: column;
 }
- 
+
 .onboarding-thq-text-elm2 {
   color: rgba(33, 37, 41, 1);
   height: auto;
@@ -92,7 +96,7 @@
   text-align: center;
   line-height: 24px;
 }
- 
+
 .onboarding-thq-container-elm1 {
   display: flex;
   align-self: stretch;
@@ -100,7 +104,7 @@
   flex-direction: column;
   justify-content: center;
 }
- 
+
 .onboarding-thq-list-elm {
   gap: 8px;
   display: flex;
@@ -108,19 +112,19 @@
   align-items: flex-start;
   flex-direction: column;
 }
- 
+
 .onboarding-thq-emergency-call-row-elm {
   gap: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
- 
+
 .onboarding-thq-container-elm2 {
   width: 28px;
   height: 26px;
 }
- 
+
 .onboarding-thq-text-elm3 {
   color: rgba(33, 37, 41, 1);
   height: auto;
@@ -133,14 +137,14 @@
   font-stretch: normal;
   text-decoration: none;
 }
- 
+
 .onboarding-thq-nearby-alert-row-elm {
   gap: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
- 
+
 .onboarding-thq-verticalcontainer-elm1 {
   gap: 4px;
   display: flex;
@@ -148,12 +152,12 @@
   overflow: hidden;
   align-items: center;
 }
- 
+
 .onboarding-thq-combinedpin-elm {
   width: 23px;
   height: 27px;
 }
- 
+
 .onboarding-thq-text-elm4 {
   color: rgba(33, 37, 41, 1);
   height: auto;
@@ -166,14 +170,14 @@
   font-stretch: normal;
   text-decoration: none;
 }
- 
+
 .onboarding-thq-quick-setup-row-elm {
   gap: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
- 
+
 .onboarding-thq-verticalcontainer-elm2 {
   gap: 4px;
   width: 28.05164337158203px;
@@ -184,12 +188,12 @@
   flex-shrink: 0;
   flex-direction: column;
 }
- 
+
 .onboarding-thq-combinedclock-elm {
   width: 26px;
   height: 25px;
 }
- 
+
 .onboarding-thq-text-elm5 {
   color: rgba(33, 37, 41, 1);
   height: auto;
@@ -202,7 +206,7 @@
   font-stretch: normal;
   text-decoration: none;
 }
- 
+
 .onboarding-thq-container-primary-action-elm {
   display: flex;
   padding: 16px;
@@ -214,7 +218,7 @@
   justify-content: center;
   background-color: var(--dl-color-default-secondary);
 }
- 
+
 .onboarding-thq-button-elm {
   display: flex;
   overflow: hidden;
@@ -224,7 +228,7 @@
   justify-content: center;
   background-color: var(--dl-color-default-secondary);
 }
- 
+
 .onboarding-thq-text-elm6 {
   color: rgba(255, 255, 255, 1);
   width: 203px;
@@ -238,7 +242,7 @@
   font-stretch: normal;
   text-decoration: none;
 }
- 
+
 .onboarding-thq-text-elm7 {
   color: rgba(142, 150, 158, 1);
   height: auto;
@@ -246,11 +250,11 @@
   text-align: center;
   line-height: normal;
 }
- 
+
 .onboarding-link {
   display: contents;
 }
- 
+
 .onboarding-container2 {
   right: 50px;
   border: 1px solid #ffffff5c;
@@ -269,12 +273,12 @@
   backdrop-filter: blur(6px);
   background-color: rgba(41, 41, 41, 0.41);
 }
- 
+
 .onboarding-icon1 {
   width: 24px;
   margin-right: 4px;
 }
- 
+
 .onboarding-text {
   color: white;
   font-size: 13px;
@@ -282,7 +286,7 @@
   font-weight: 500;
   line-height: 24px;
 }
- 
+
 @media (max-width: 600px) {
   .onboarding-thq-onboarding-elm {
     padding: 36px 24px;
@@ -294,29 +298,6 @@
     flex-direction: column;
     gap: 12px;
     align-items: center;
-  }
-
-  .onboarding-thq-icon-elm {
-    width: 100px;
-    height: auto;
-    align-items: center;
-    display: flex;
-    justify-content: center;
-    position: relative;
-  }
-
-  .onboarding-thq-pin1-elm {
-    position: relative;
-    top: auto;
-    left: auto;
-    width: 100px;
-    height: auto;
-    margin: 0 auto;
-  }
-
-  .onboarding-thq-circle1-elm,
-  .onboarding-thq-heart1-elm {
-    display: none;
   }
 
   .onboarding-thq-text-elm1 {

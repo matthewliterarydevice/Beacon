@@ -38,52 +38,6 @@
       href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap"
       data-tag="font"
     />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&amp;display=swap"
-      data-tag="font"
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap"
-      data-tag="font"
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap"
-      data-tag="font"
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap"
-      data-tag="font"
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap"
-      data-tag="font"
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap"
-      data-tag="font"
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap"
-      data-tag="font"
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap"
-      data-tag="font"
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap"
-      data-tag="font"
-    />
-    
   </head>
   <body>
     <link rel="stylesheet" href="./style.css" />
@@ -93,12 +47,14 @@
       <div class="nudge-container1">
         <div class="nudge-thq-nudge-elm">
           <span class="nudge-thq-text-elm10 Header">Emergency Assistance</span>
-          <div class="nudge-thq-paragraphcontainer-elm">
-            <span class="nudge-thq-text-elm11 Header2">Hold for help</span>
-            <span class="nudge-thq-text-elm12 Subtext">
-              Call 911 + alert nearby responders
-            </span>
-          </div>
+          <a href="help.html" class="nudge-link">
+            <div class="nudge-thq-paragraphcontainer-elm">
+              <span class="nudge-thq-text-elm11 Header2">Hold for help</span>
+              <span class="nudge-thq-text-elm12 Subtext">
+                Call 911 + alert nearby responders
+              </span>
+            </div>
+          </a>
           <div class="nudge-thq-frame27-elm">
             <div class="nudge-thq-frame29-elm">
               <span class="nudge-thq-text-elm13 Header2">
@@ -106,12 +62,12 @@
               </span>
             </div>
             <div class="nudge-thq-frame32-elm">
-              <div class="nudge-thq-frame30-elm">
+              <button id="yesButton" class="nudge-thq-frame30-elm">
                 <span class="nudge-thq-text-elm14">Yes</span>
-              </div>
-              <div class="nudge-thq-frame31-elm">
+              </button>
+              <button id="noButton" class="nudge-thq-frame31-elm">
                 <span class="nudge-thq-text-elm15">No</span>
-              </div>
+              </button>
             </div>
             <span class="nudge-thq-text-elm16">
               <span class="nudge-thq-text-elm17">To check:</span>
@@ -123,15 +79,23 @@
                 loudly ask, "Are you okay?"
               </span>
             </span>
-            <span class="nudge-thq-text-elm20 Text">I’m unsure</span>
+            <span class="nudge-thq-text-elm20 Text">I'm unsure</span>
           </div>
         </div>
-        
+
       </div>
       <link
         rel="canonical"
         href="https://beacon-41g3fo.teleporthq.site/nudge"
       />
     </div>
+    <script>
+      document.getElementById('yesButton').addEventListener('click', function () {
+        console.log('Yes (unresponsive) pressed');
+      });
+      document.getElementById('noButton').addEventListener('click', function () {
+        console.log('No (responsive) pressed');
+      });
+    </script>
   </body>
 </html>

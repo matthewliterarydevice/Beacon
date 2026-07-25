@@ -32,7 +32,9 @@
  
 .help-thq-logo-elm {
   width: 116px;
-  height: 140px;
+  height: auto;
+  max-height: 140px;
+  object-fit: contain;
 }
  
 .help-thq-text-elm1 {
@@ -88,7 +90,7 @@
   font-size: 20.152671813964844px;
   font-style: Semi Bold;
   text-align: center;
-  font-family: ""Inter"";
+  font-family: "Inter";
   font-weight: 700;
   line-height: 26.870229721069336px;
   font-stretch: normal;
