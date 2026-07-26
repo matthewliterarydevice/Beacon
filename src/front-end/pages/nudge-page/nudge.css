@@ -1,0 +1,298 @@
+.nudge-container1 {
+  width: 100%;
+  display: flex;
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 100dvh;
+  min-height: 100dvh;
+  align-items: center;
+  flex-direction: column;
+}
+
+.nudge-thq-nudge-elm {
+  gap: clamp(16px, 3vh, 32px);
+  width: 100%;
+  /* min-height (not height) lets this grow taller than one screen if the
+     card's content ever genuinely needs more room than the viewport has
+     — the outer container scrolls in that case instead of clipping. */
+  min-height: 100%;
+  height: auto;
+  display: flex;
+  padding: clamp(24px, 6vh, 48px) clamp(20px, 5vw, 48px) clamp(24px, 5vh, 40px);
+  align-items: center;
+  flex-shrink: 0;
+  flex-direction: column;
+  background-color: var(--dl-color-default-quickresponseicon);
+  box-sizing: border-box;
+}
+
+.nudge-thq-text-elm10 {
+  color: rgba(0, 0, 0, 1) !important;
+  height: auto;
+  align-self: stretch;
+  text-align: center;
+  line-height: 1.15 !important;
+  font-size: clamp(20px, 3vh, 26px) !important;
+  flex-shrink: 0;
+}
+
+/* NEW: the circle-stage owns all the leftover vertical space between the
+   header and the bottom card. It can never be squeezed out or overlap
+   the card, because the card below is a normal flex item that always
+   gets the space its content needs first. */
+.nudge-thq-circle-stage-elm {
+  /* This is the ONLY element allowed to shrink under space pressure —
+     the card below always keeps its natural content height. */
+  flex: 1 1 auto;
+  min-height: 160px;
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  container-type: size;
+  container-name: circle-stage;
+}
+
+.nudge-link {
+  display: contents;
+}
+
+/* NEW: sized in container-query units relative to the circle-stage box
+   itself (not the whole viewport), so it's always the largest square
+   that actually fits — no more "too small" or "overflowing" cases. */
+.nudge-thq-paragraphcontainer-elm {
+  gap: 8px;
+  aspect-ratio: 1;
+  width: min(80cqw, 80cqh, 320px);
+  min-width: 160px;
+  min-height: 160px;
+  display: flex;
+  padding: clamp(20px, 8cqh, 48px) clamp(12px, 4cqw, 16px);
+  box-shadow: 0px 3.3623225688934326px 8.966193199157715px 0px rgba(0, 0, 0, 0.15000000596046448);
+  align-items: center;
+  flex-shrink: 0;
+  border-radius: 50%;
+  flex-direction: column;
+  justify-content: center;
+  background-color: var(--dl-color-default-primary);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.nudge-thq-paragraphcontainer-elm:hover {
+  background-color: #0047ab;
+}
+
+.nudge-thq-text-elm11 {
+  color: rgba(255, 255, 255, 1);
+  height: auto;
+  text-align: center;
+  line-height: 1.15 !important;
+  font-size: clamp(22px, 12cqh, 30px) !important;
+  font-weight: 600;
+}
+
+.nudge-thq-text-elm12 {
+  color: rgba(255, 255, 255, 0.8500000238418579);
+  width: 100%;
+  max-width: 200px;
+  height: auto;
+  text-align: center;
+  line-height: 1.4 !important;
+  font-size: clamp(12px, 6cqh, 14px) !important;
+}
+
+/* Bottom card: always the last item in the column. It is never given a
+   height cap, so it can never internally scroll or overflow its own
+   box — it is always exactly as tall as its content requires. The
+   circle-stage above absorbs whatever space is left (down to its own
+   160px floor); if truly nothing fits, the page scrolls (see
+   .nudge-container1) instead of anything being clipped. */
+.nudge-thq-frame27-elm {
+  gap: clamp(8px, 1.5vh, 16px);
+  width: 100%;
+  max-width: 440px;
+  height: auto;
+  display: flex;
+  padding: clamp(16px, 3vh, 32px) clamp(20px, 5vw, 48px);
+  z-index: 3;
+  align-items: flex-start;
+  flex-shrink: 0;
+  flex-direction: column;
+  background-color: rgba(255, 255, 255, 1);
+  box-sizing: border-box;
+}
+
+.nudge-thq-frame29-elm {
+  gap: 4px;
+  display: flex;
+  align-self: stretch;
+  align-items: flex-start;
+  flex-shrink: 0;
+}
+
+.nudge-thq-text-elm13 {
+  color: rgba(0, 0, 0, 1);
+  height: auto;
+  flex-grow: 1;
+  text-align: left;
+  line-height: 1.15 !important;
+  font-size: clamp(16px, 2.2vh, 20px) !important;
+}
+
+.nudge-thq-frame32-elm {
+  gap: 16px;
+  display: flex;
+  align-self: stretch;
+  align-items: flex-start;
+  flex-shrink: 0;
+}
+
+.nudge-thq-frame30-elm {
+  gap: 4px;
+  display: flex;
+  padding: clamp(6px, 1.2vh, 8px);
+  flex-grow: 1;
+  cursor: pointer;
+  align-items: center;
+  border-color: rgba(206, 206, 206, 1);
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 8px;
+  justify-content: center;
+  background-color: var(--dl-color-default-primary);
+}
+
+.nudge-thq-text-elm14 {
+  color: rgba(255, 255, 255, 1);
+  height: auto;
+  font-size: clamp(18px, 4vw, 26px);
+  font-style: Medium;
+  text-align: center;
+  font-family: Inter;
+  font-weight: 500;
+  line-height: normal;
+  font-stretch: normal;
+  text-decoration: none;
+}
+
+.nudge-thq-frame31-elm {
+  gap: 4px;
+  display: flex;
+  padding: clamp(6px, 1.2vh, 8px);
+  flex-grow: 1;
+  cursor: pointer;
+  align-self: stretch;
+  align-items: center;
+  border-color: rgba(206, 206, 206, 1);
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 8px;
+  justify-content: center;
+  background-color: rgba(239, 239, 239, 1);
+}
+
+.nudge-thq-text-elm15 {
+  color: rgba(0, 0, 0, 1);
+  height: auto;
+  font-size: clamp(18px, 4vw, 26px);
+  font-style: Medium;
+  text-align: center;
+  font-family: Inter;
+  font-weight: 500;
+  line-height: normal;
+  font-stretch: normal;
+  text-decoration: none;
+}
+
+.nudge-thq-text-elm16 {
+  color: rgba(0, 0, 0, 1);
+  height: auto;
+  font-size: clamp(13px, 1.8vh, 16px);
+  align-self: stretch;
+  font-style: Bold;
+  text-align: left;
+  font-family: Inter;
+  font-weight: 700;
+  line-height: 1.4;
+  font-stretch: normal;
+  text-decoration: none;
+}
+
+.nudge-thq-text-elm17 {
+  font-weight: 700;
+}
+
+.nudge-thq-frame33-elm {
+  display: flex;
+  align-self: stretch;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  width: 100%;
+}
+
+.nudge-thq-text-elm20 {
+  color: var(--dl-color-typography-muted);
+  height: auto;
+  text-align: left;
+  line-height: 1.4 !important;
+  font-size: clamp(12px, 1.6vh, 14px) !important;
+  cursor: pointer;
+}
+
+.nudge-thq-text-elm21 {
+  color: var(--dl-color-typography-muted);
+  height: auto;
+  text-align: right;
+  line-height: 1.4 !important;
+  font-size: clamp(12px, 1.6vh, 14px) !important;
+  cursor: pointer;
+}
+
+.nudge-container2 {
+  right: 50px;
+  border: 1px solid #ffffff5c;
+  bottom: 30px;
+  display: flex;
+  z-index: 22;
+  position: fixed;
+  box-shadow: 5px 5px 10px 0px rgba(31, 31, 31, 0.4);
+  min-height: auto;
+  align-items: center;
+  padding-top: 8px;
+  padding-left: 12px;
+  border-radius: 8px;
+  padding-right: 12px;
+  padding-bottom: 8px;
+  backdrop-filter: blur(6px);
+  background-color: rgba(41, 41, 41, 0.41);
+}
+
+.nudge-icon1 {
+  width: 24px;
+  margin-right: 4px;
+}
+
+.nudge-text3 {
+  color: white;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 24px;
+}
+
+@media (max-width: 479px) {
+  .nudge-thq-frame27-elm {
+    justify-content: flex-start;
+  }
+}
+
+/* Only the header is dropped on very short screens now — the circle
+   and card sizing no longer depend on these breakpoints at all. */
+@media (max-height: 480px) {
+  .nudge-thq-text-elm10 {
+    display: none;
+  }
+}
