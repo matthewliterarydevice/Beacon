@@ -6,7 +6,11 @@
   justify-content: center;
   flex-direction: column;
   padding: 24px;
+  /* reserve space so the fixed bottom nav never overlaps content */
+  padding-bottom: calc(24px + 64px + env(safe-area-inset-bottom, 0px));
   box-sizing: border-box;
+  /* allow the page to scroll instead of clipping content under the nav */
+  overflow-y: auto;
 }
 
 .sign-up-thq-signup-elm {
@@ -53,11 +57,12 @@
 }
 
 .sign-up-thq-form-elm {
-  gap: 32px;
+  gap: 16px;
   display: flex;
   align-self: stretch;
   align-items: flex-start;
   flex-direction: column;
+  padding-bottom: 4px;
 }
 
 .sign-up-thq-text-elm2 {
@@ -79,12 +84,12 @@
 }
 
 .sign-up-thq-input-elm {
-  gap: 16px;
+  gap: 8px;
   display: flex;
   width: 100%;
   align-items: stretch;
   flex-direction: column;
-  margin-bottom: 8px;
+  margin-bottom: 0;
 }
 
 .sign-up-thq-invitecode-elm1,
@@ -113,7 +118,7 @@
 .sign-up-thq-textinput-elm2,
 .sign-up-thq-textinput-elm3 {
   gap: 4px;
-  color: rgba(144, 150, 156, 1);
+  color: rgba(0, 0, 0, 1);
   display: block;
   width: 100%;
   max-width: 100%;
@@ -139,6 +144,7 @@
   align-items: center;
   flex-direction: column;
   justify-content: center;
+  margin-top: 4px;
 }
 
 .sign-up-thq-container-primary-action-elm {
@@ -159,8 +165,8 @@
   display: flex;
   width: 100%;
   max-width: 280px;
-  margin-top: 8px;
-  padding: 12px 16px;
+  margin-top: 0;
+  padding: 10px 14px;
   overflow: hidden;
   align-items: center;
   border-radius: 13.464789390563965px;
@@ -225,6 +231,8 @@
 @media (max-width: 640px) {
   .sign-up-container1 {
     padding: 16px;
+    padding-bottom: calc(16px + 60px + env(safe-area-inset-bottom, 0px));
+    overflow-y: auto;
   }
 
   .sign-up-thq-signup-elm {
@@ -249,6 +257,8 @@
   .sign-up-container1 {
     min-height: auto;
     padding: 12px;
+    padding-bottom: calc(12px + 56px + env(safe-area-inset-bottom, 0px));
+    overflow-y: auto;
   }
 
   .sign-up-thq-signup-elm {
@@ -305,4 +315,3 @@
   font-size: clamp(13px, 3.5vw, 15px);
   line-height: normal;
 }
-

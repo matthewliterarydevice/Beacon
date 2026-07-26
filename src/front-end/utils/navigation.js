@@ -1,21 +1,32 @@
 (function () {
   const currentPage = window.location.pathname.split('/').pop() || 'index.html';
   const signedIn = localStorage.getItem('beaconSignedIn') === 'true';
-  const primaryMap = {
-    learn: 'learn.html',
-    emergency: 'emergency.html',
-    respond: signedIn ? 'respond.html' : 'signup.html',
+  const currentKey = currentPage === 'index.html' ? 'emergency' : currentPage.replace(/\.html$/, '');
+
+  const setRespondDestination = (link) => {
+    if (link.dataset.tab === 'respond') {
+      link.href = signedIn ? '../respond-page/respond.html' : '../signup-page/signup.html?redirect=respond.html';
+      link.addEventListener('click', (event) => {
+        event.preventDefault();
+        if (signedIn) {
+          window.location.href = '../respond-page/respond.html';
+        } else {
+          window.location.href = '../signup-page/signup.html?redirect=respond.html';
+        }
+      });
+    }
   };
+
+  document.querySelectorAll('.bottom-nav-item[data-tab="respond"]').forEach(setRespondDestination);
 
   document.querySelectorAll('[data-nav-page]').forEach((link) => {
     const pageName = link.dataset.navPage;
-    const target = primaryMap[pageName];
+    const target = pageName === 'respond' ? (signedIn ? 'respond.html' : 'signup.html') : undefined;
 
     if (target) {
       link.href = target;
     }
 
-    const currentKey = currentPage === 'index.html' ? 'emergency' : currentPage.replace(/\.html$/, '');
     if (pageName === currentKey) {
       link.classList.add('active');
     }

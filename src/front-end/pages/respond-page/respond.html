@@ -40,6 +40,14 @@
     />
   </head>
   <body>
+    <script>
+      (function() {
+        if (localStorage.getItem('beaconSignedIn') !== 'true') {
+          window.location.href = '../signup-page/signup.html?redirect=respond.html';
+        }
+      })();
+    </script>
+    <script src="../../utils/navigation.js"></script>
     <link rel="stylesheet" href="../../styles/style.css" />
     <div>
       <link href="./respond.css" rel="stylesheet" />
