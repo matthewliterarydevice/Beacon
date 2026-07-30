@@ -52,7 +52,7 @@ function runNavigationScript(signedIn) {
 test('respond nav sends signed-out users to signup and signed-in users to respond', () => {
   const unsigned = runNavigationScript(false);
   unsigned.events.click({ preventDefault() {} });
-  assert.equal(unsigned.link.href, '../signup-page/signup.html?redirect=respond.html');
+  assert.equal(unsigned.link.href, '../login-page/login.html?redirect=respond.html');
 
   const signed = runNavigationScript(true);
   signed.events.click({ preventDefault() {} });

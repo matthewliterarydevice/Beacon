@@ -11,6 +11,11 @@
   box-sizing: border-box;
   /* allow the page to scroll instead of clipping content under the nav */
   overflow-y: auto;
+  font-family: Inter, sans-serif;
+}
+
+body {
+  font-family: Inter, sans-serif;
 }
 
 .sign-up-thq-signup-elm {
@@ -84,7 +89,7 @@
 }
 
 .sign-up-thq-input-elm {
-  gap: 8px;
+  gap: 16px;
   display: flex;
   width: 100%;
   align-items: stretch;
@@ -94,7 +99,9 @@
 
 .sign-up-thq-invitecode-elm1,
 .sign-up-thq-invitecode-elm2,
-.sign-up-thq-invitecode-elm3 {
+.sign-up-thq-invitecode-elm3,
+.sign-up-thq-invitecode-elm4,
+.sign-up-thq-invitecode-elm5 {
   gap: 4px;
   width: 100%;
   max-width: none;
@@ -104,9 +111,17 @@
   box-sizing: border-box;
 }
 
+.sign-up-thq-invitecode-elm1 {
+  max-width: 420px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .sign-up-thq-text-elm5,
 .sign-up-thq-text-elm6,
-.sign-up-thq-text-elm7 {
+.sign-up-thq-text-elm7,
+.sign-up-thq-text-elm9,
+.sign-up-thq-text-elm10 {
   color: rgba(0, 0, 0, 1);
   width: 100%;
   height: auto;
@@ -116,7 +131,9 @@
 
 .sign-up-thq-textinput-elm1,
 .sign-up-thq-textinput-elm2,
-.sign-up-thq-textinput-elm3 {
+.sign-up-thq-textinput-elm3,
+.sign-up-thq-textinput-elm4,
+.sign-up-thq-textinput-elm5 {
   gap: 4px;
   color: rgba(0, 0, 0, 1);
   display: block;
@@ -165,19 +182,29 @@
   display: flex;
   width: 100%;
   max-width: 280px;
-  margin-top: 0;
-  padding: 10px 14px;
+  margin: 16px auto 0 auto;
+  padding: 12px 18px;
   overflow: hidden;
   align-items: center;
   border-radius: 13.464789390563965px;
   justify-content: center;
-  background-color: var(--dl-color-default-secondary);
   box-sizing: border-box;
   cursor: pointer;
+  font-family: Inter, sans-serif;
+  background-color: var(--dl-color-theme-primary1);
+  color: var(--dl-color-theme-secondary1);
+  border: 1px solid transparent;
+  outline: none;
 }
 
 .sign-up-thq-button-elm2:hover {
   opacity: 0.95;
+  background-color: var(--dl-color-theme-primary2);
+}
+
+.sign-up-thq-button-elm2:focus-visible {
+  outline: 2px solid var(--dl-color-default-secondary);
+  outline-offset: 3px;
 }
 
 .sign-up-thq-text-elm8 {
@@ -283,11 +310,16 @@
   right: 0;
   z-index: 30;
   display: flex;
+  align-items: center;
+  justify-content: space-around;
   width: 100%;
+  height: clamp(56px, 8vw, 64px);
   background-color: var(--dl-color-theme-neutral-light);
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
   box-shadow: 0px -2px 10px 0px rgba(0, 0, 0, 0.08);
+  padding: 0 12px;
   padding-bottom: env(safe-area-inset-bottom, 0px);
+  box-sizing: border-box;
 }
 
 .bottom-nav-item {
@@ -295,10 +327,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: clamp(10px, 3vw, 14px) 8px;
+  min-height: 100%;
+  padding: 8px 6px;
   color: var(--dl-color-typography-muted);
   transition: color 0.2s ease, background-color 0.2s ease;
   text-decoration: none;
+  font-family: Inter, sans-serif;
+  font-weight: 500;
 }
 
 .bottom-nav-item:hover {
@@ -312,6 +347,7 @@
 }
 
 .bottom-nav-label {
+  font-family: Inter, sans-serif;
   font-size: clamp(13px, 3.5vw, 15px);
   line-height: normal;
 }

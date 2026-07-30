@@ -1,0 +1,78 @@
+:root {
+  color-scheme: light;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #f5f7fb;
+  font-family: Inter, sans-serif;
+  color: #1f2937;
+}
+
+.settings-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px 96px;
+}
+
+.settings-card {
+  width: 100%;
+  max-width: 420px;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+  padding: 24px;
+}
+
+.settings-header h1 {
+  margin: 0 0 8px;
+  font-size: 1.6rem;
+  color: #0f172a;
+}
+
+.settings-header p {
+  margin: 0 0 20px;
+  color: #475569;
+  line-height: 1.5;
+}
+
+.settings-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.settings-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.settings-label {
+  font-weight: 600;
+  color: #334155;
+}
+
+.settings-value {
+  text-align: right;
+  color: #0f172a;
+  word-break: break-word;
+}
+
+.settings-logout-button {
+  width: 100%;
+  border: none;
+  border-radius: 999px;
+  background: #0f766e;
+  color: #ffffff;
+  padding: 12px 16px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}

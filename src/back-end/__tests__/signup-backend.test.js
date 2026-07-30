@@ -87,6 +87,292 @@ test('buildSignupUrl uses the same origin when the page is served from Beacon', 
   ]);
 });
 
+test('POST /api/signup rejects invite codes that are not in the allowlist', async () => {
+  const usersDir = path.join(projectRoot, 'src', 'back-end', 'data', 'users');
+
+  fs.rmSync(usersDir, { recursive: true, force: true });
+  fs.mkdirSync(usersDir, { recursive: true });
+
+  const serverProcess = spawn(process.execPath, [path.join(projectRoot, 'src', 'back-end', 'server.js')], {
+    cwd: projectRoot,
+    env: { ...process.env, PORT: '3114' },
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
+
+  let serverOutput = '';
+  serverProcess.stdout.on('data', (chunk) => {
+    serverOutput += chunk.toString();
+  });
+  serverProcess.stderr.on('data', (chunk) => {
+    serverOutput += chunk.toString();
+  });
+
+  try {
+    await waitForServer(3114);
+
+    const response = await new Promise((resolve, reject) => {
+      const req = require('node:http').request({
+        host: '127.0.0.1',
+        port: 3114,
+        path: '/api/signup',
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      }, (res) => {
+        let body = '';
+        res.setEncoding('utf8');
+        res.on('data', (chunk) => { body += chunk; });
+        res.on('end', () => resolve({ statusCode: res.statusCode, body }));
+      });
+
+      req.on('error', reject);
+      req.write(JSON.stringify({
+        inviteCode: 'BAD-CODE',
+        name: 'Avery',
+        phone: '123-456-7890',
+        email: 'avery@example.com',
+        username: 'avery',
+        password: 'secret123',
+      }));
+      req.end();
+    });
+
+    assert.equal(response.statusCode, 400);
+    const payload = JSON.parse(response.body);
+    assert.equal(payload.error, 'Invite code is not valid.');
+  } finally {
+    serverProcess.kill('SIGTERM');
+    await new Promise((resolve) => setTimeout(resolve, 200));
+  }
+});
+
+test('POST /api/signup returns a descriptive error when the invite code list cannot be loaded', async () => {
+  const usersDir = path.join(projectRoot, 'src', 'back-end', 'data', 'users');
+  const inviteCodesFile = path.join(projectRoot, 'src', 'back-end', 'data', 'invite-codes.json');
+
+  fs.rmSync(usersDir, { recursive: true, force: true });
+  fs.mkdirSync(usersDir, { recursive: true });
+  fs.rmSync(inviteCodesFile, { force: true });
+
+  const serverProcess = spawn(process.execPath, [path.join(projectRoot, 'src', 'back-end', 'server.js')], {
+    cwd: projectRoot,
+    env: { ...process.env, PORT: '3115' },
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
+
+  let serverOutput = '';
+  serverProcess.stdout.on('data', (chunk) => {
+    serverOutput += chunk.toString();
+  });
+  serverProcess.stderr.on('data', (chunk) => {
+    serverOutput += chunk.toString();
+  });
+
+  try {
+    await waitForServer(3115);
+
+    const response = await new Promise((resolve, reject) => {
+      const req = require('node:http').request({
+        host: '127.0.0.1',
+        port: 3115,
+        path: '/api/signup',
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      }, (res) => {
+        let body = '';
+        res.setEncoding('utf8');
+        res.on('data', (chunk) => { body += chunk; });
+        res.on('end', () => resolve({ statusCode: res.statusCode, body }));
+      });
+
+      req.on('error', reject);
+      req.write(JSON.stringify({
+        inviteCode: 'UGM-7X2K',
+        name: 'Avery',
+        phone: '123-456-7890',
+        username: 'avery',
+        password: 'secret123',
+      }));
+      req.end();
+    });
+
+    assert.equal(response.statusCode, 503);
+    const payload = JSON.parse(response.body);
+    assert.equal(payload.error, 'Could not load invite codes.');
+    assert.match(payload.details, /invite code list/i);
+  } finally {
+    serverProcess.kill('SIGTERM');
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    fs.writeFileSync(inviteCodesFile, '[\n  "UGM-7X2K"\n]\n');
+  }
+});
+
+test('POST /api/profile updates editable account details', async () => {
+  const usersDir = path.join(projectRoot, 'src', 'back-end', 'data', 'users');
+
+  fs.rmSync(usersDir, { recursive: true, force: true });
+  fs.mkdirSync(usersDir, { recursive: true });
+
+  const serverProcess = spawn(process.execPath, [path.join(projectRoot, 'src', 'back-end', 'server.js')], {
+    cwd: projectRoot,
+    env: { ...process.env, PORT: '3116' },
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
+
+  let serverOutput = '';
+  serverProcess.stdout.on('data', (chunk) => {
+    serverOutput += chunk.toString();
+  });
+  serverProcess.stderr.on('data', (chunk) => {
+    serverOutput += chunk.toString();
+  });
+
+  try {
+    await waitForServer(3116);
+
+    const signupResponse = await new Promise((resolve, reject) => {
+      const req = require('node:http').request({
+        host: '127.0.0.1',
+        port: 3116,
+        path: '/api/signup',
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      }, (res) => {
+        let body = '';
+        res.setEncoding('utf8');
+        res.on('data', (chunk) => { body += chunk; });
+        res.on('end', () => resolve({ statusCode: res.statusCode, body }));
+      });
+
+      req.on('error', reject);
+      req.write(JSON.stringify({
+        inviteCode: 'UGM-7X2K',
+        name: 'Avery',
+        phone: '123-456-7890',
+        email: 'avery@example.com',
+        username: 'avery',
+        password: 'secret123',
+      }));
+      req.end();
+    });
+
+    assert.equal(signupResponse.statusCode, 200);
+
+    const updateResponse = await new Promise((resolve, reject) => {
+      const req = require('node:http').request({
+        host: '127.0.0.1',
+        port: 3116,
+        path: '/api/profile',
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      }, (res) => {
+        let body = '';
+        res.setEncoding('utf8');
+        res.on('data', (chunk) => { body += chunk; });
+        res.on('end', () => resolve({ statusCode: res.statusCode, body }));
+      });
+
+      req.on('error', reject);
+      req.write(JSON.stringify({
+        phone: '123-456-7890',
+        name: 'Avery Updated',
+        username: 'avery-updated',
+        email: 'avery.updated@example.com',
+        newPassword: 'new-secret',
+      }));
+      req.end();
+    });
+
+    assert.equal(updateResponse.statusCode, 200);
+    const payload = JSON.parse(updateResponse.body);
+    assert.equal(payload.name, 'Avery Updated');
+    assert.equal(payload.email, 'avery.updated@example.com');
+    assert.equal(payload.username, 'avery-updated');
+    assert.equal(payload.password, 'new-secret');
+  } finally {
+    serverProcess.kill('SIGTERM');
+    await new Promise((resolve) => setTimeout(resolve, 200));
+  }
+});
+
+test('POST /api/login authenticates a stored responder profile', async () => {
+  const usersDir = path.join(projectRoot, 'src', 'back-end', 'data', 'users');
+
+  fs.rmSync(usersDir, { recursive: true, force: true });
+  fs.mkdirSync(usersDir, { recursive: true });
+
+  const serverProcess = spawn(process.execPath, [path.join(projectRoot, 'src', 'back-end', 'server.js')], {
+    cwd: projectRoot,
+    env: { ...process.env, PORT: '3113' },
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
+
+  let serverOutput = '';
+  serverProcess.stdout.on('data', (chunk) => {
+    serverOutput += chunk.toString();
+  });
+  serverProcess.stderr.on('data', (chunk) => {
+    serverOutput += chunk.toString();
+  });
+
+  try {
+    await waitForServer(3113);
+
+    const signupResponse = await new Promise((resolve, reject) => {
+      const req = require('node:http').request({
+        host: '127.0.0.1',
+        port: 3113,
+        path: '/api/signup',
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      }, (res) => {
+        let body = '';
+        res.setEncoding('utf8');
+        res.on('data', (chunk) => { body += chunk; });
+        res.on('end', () => resolve({ statusCode: res.statusCode, body }));
+      });
+
+      req.on('error', reject);
+      req.write(JSON.stringify({
+        inviteCode: 'UGM-7X2K',
+        name: 'Avery',
+        phone: '123-456-7890',
+        username: 'avery',
+        password: 'secret123',
+      }));
+      req.end();
+    });
+
+    assert.equal(signupResponse.statusCode, 200);
+
+    const loginResponse = await new Promise((resolve, reject) => {
+      const req = require('node:http').request({
+        host: '127.0.0.1',
+        port: 3113,
+        path: '/api/login',
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      }, (res) => {
+        let body = '';
+        res.setEncoding('utf8');
+        res.on('data', (chunk) => { body += chunk; });
+        res.on('end', () => resolve({ statusCode: res.statusCode, body }));
+      });
+
+      req.on('error', reject);
+      req.write(JSON.stringify({ username: 'avery', password: 'secret123' }));
+      req.end();
+    });
+
+    assert.equal(loginResponse.statusCode, 200);
+    const payload = JSON.parse(loginResponse.body);
+    assert.equal(payload.action, 'login');
+    assert.equal(payload.username, 'avery');
+  } finally {
+    serverProcess.kill('SIGTERM');
+    await new Promise((resolve) => setTimeout(resolve, 200));
+  }
+});
+
 test('POST /api/signup saves a responder profile', async () => {
   const usersDir = path.join(projectRoot, 'src', 'back-end', 'data', 'users');
 
@@ -131,6 +417,8 @@ test('POST /api/signup saves a responder profile', async () => {
         inviteCode: 'UGM-7X2K',
         name: 'Avery',
         phone: '123-456-7890',
+        username: 'avery',
+        password: 'secret123',
       }));
       req.end();
     });
@@ -166,6 +454,8 @@ test('POST /api/signup saves a responder profile', async () => {
         inviteCode: 'UGM-7X2K',
         name: 'Avery',
         phone: '123-456-7890',
+        username: 'avery',
+        password: 'secret123',
       }));
       req2.end();
     });

@@ -5,13 +5,13 @@
 
   const setRespondDestination = (link) => {
     if (link.dataset.tab === 'respond') {
-      link.href = signedIn ? '../respond-page/respond.html' : '../signup-page/signup.html?redirect=respond.html';
+      link.href = signedIn ? '../respond-page/respond.html' : '../login-page/login.html?redirect=respond.html';
       link.addEventListener('click', (event) => {
         event.preventDefault();
         if (signedIn) {
           window.location.href = '../respond-page/respond.html';
         } else {
-          window.location.href = '../signup-page/signup.html?redirect=respond.html';
+          window.location.href = '../login-page/login.html?redirect=respond.html';
         }
       });
     }
@@ -21,7 +21,7 @@
 
   document.querySelectorAll('[data-nav-page]').forEach((link) => {
     const pageName = link.dataset.navPage;
-    const target = pageName === 'respond' ? (signedIn ? 'respond.html' : 'signup.html') : undefined;
+    const target = pageName === 'respond' ? (signedIn ? 'respond.html' : 'login.html') : undefined;
 
     if (target) {
       link.href = target;

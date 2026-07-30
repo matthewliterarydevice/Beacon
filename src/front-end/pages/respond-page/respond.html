@@ -43,12 +43,13 @@
     <script>
       (function() {
         if (localStorage.getItem('beaconSignedIn') !== 'true') {
-          window.location.href = '../signup-page/signup.html?redirect=respond.html';
+          window.location.href = '../login-page/login.html?redirect=respond.html';
         }
       })();
     </script>
     <script src="../../utils/navigation.js"></script>
     <link rel="stylesheet" href="../../styles/style.css" />
+    <link href="../settings-page/settings-modal.css" rel="stylesheet" />
     <div>
       <link href="./respond.css" rel="stylesheet" />
 
@@ -56,14 +57,14 @@
         <div class="respond-thq-respond-elm1">
           <div class="respond-thq-card-elm">
             <div class="respond-thq-top-section-elm">
-              <div class="respond-thq-respond-elm2">
-                <span class="respond-thq-text-elm10">Respond</span>
-              </div>
-              <div class="respond-thq-alerts-elm">
-                <span class="respond-thq-text-elm11">Alerts on</span>
-                <div class="respond-thq-toggle-elm">
-                  <div class="respond-thq-togglewhitecircle-elm"></div>
+              <div class="respond-thq-header-row-elm">
+                <div class="respond-thq-respond-elm2">
+                  <span class="respond-thq-text-elm10">Respond</span>
                 </div>
+                <button type="button" class="respond-settings-button" data-open-settings aria-label="Open account settings">
+                  <span class="respond-settings-icon">⚙</span>
+                  <span class="respond-settings-label">Settings</span>
+                </button>
               </div>
             </div>
             <div class="respond-thq-bottom-section-elm">
@@ -152,6 +153,45 @@
         console.log("Can't respond pressed");
       });
     </script>
+    <script src="../settings-page/settings-modal.js"></script>
+    <div id="settingsModalOverlay" class="settings-modal-overlay" aria-hidden="true">
+      <div class="settings-modal-card" role="dialog" aria-modal="true" aria-labelledby="settingsModalTitle">
+        <button type="button" id="settingsModalClose" class="settings-modal-close" aria-label="Close settings">×</button>
+        <div class="settings-modal-header">
+          <h2 id="settingsModalTitle">Account settings</h2>
+          <p>View your details and sign out when you are done.</p>
+        </div>
+        <div class="settings-modal-section">
+          <div class="settings-modal-row">
+            <label class="settings-modal-label" for="settingsModalName">Name</label>
+            <input id="settingsModalName" class="settings-modal-input" type="text" placeholder="Your name" />
+          </div>
+          <div class="settings-modal-row">
+            <label class="settings-modal-label" for="settingsModalUsername">Username</label>
+            <input id="settingsModalUsername" class="settings-modal-input" type="text" placeholder="Your username" />
+          </div>
+          <div class="settings-modal-row">
+            <label class="settings-modal-label" for="settingsModalEmail">Email</label>
+            <input id="settingsModalEmail" class="settings-modal-input" type="email" placeholder="you@example.com" />
+          </div>
+          <div class="settings-modal-row">
+            <label class="settings-modal-label" for="settingsModalPhone">Phone</label>
+            <input id="settingsModalPhone" class="settings-modal-input" type="text" placeholder="123-456-7890 (optional)" />
+          </div>
+          <div class="settings-modal-row">
+            <span class="settings-modal-label">Invite code</span>
+            <span id="settingsModalInviteCode" class="settings-modal-value">-</span>
+          </div>
+          <div class="settings-modal-row">
+            <label class="settings-modal-label" for="settingsModalNewPassword">New password</label>
+            <input id="settingsModalNewPassword" class="settings-modal-input" type="password" placeholder="Leave blank to keep current password" />
+          </div>
+        </div>
+        <button type="button" id="settingsModalSave" class="settings-modal-save">Save changes</button>
+        <button type="button" id="settingsModalLogout" class="settings-modal-logout">Logout</button>
+      </div>
+    </div>
+
     <nav class="bottom-nav">
     <a href="../learn-page/learn.html" class="bottom-nav-item" data-tab="learn">
       <span class="bottom-nav-label">Learn</span>

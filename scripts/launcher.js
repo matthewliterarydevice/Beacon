@@ -50,14 +50,25 @@ function startBackend() {
   });
 }
 
+const CORS_HEADERS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type',
+};
+
 const server = http.createServer(async (req, res) => {
+  if (req.method === 'OPTIONS') {
+    res.writeHead(204, CORS_HEADERS);
+    return res.end();
+  }
+
   if (req.method === 'GET' && req.url === '/start') {
     try {
       const info = await startBackend();
-      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.writeHead(200, { 'Content-Type': 'application/json', ...CORS_HEADERS });
       res.end(JSON.stringify(info));
     } catch (err) {
-      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.writeHead(500, { 'Content-Type': 'application/json', ...CORS_HEADERS });
       res.end(JSON.stringify({ error: String(err) }));
     }
     return;
@@ -65,12 +76,12 @@ const server = http.createServer(async (req, res) => {
 
   if (req.method === 'GET' && req.url === '/status') {
     const running = !!(serverProcess && !serverProcess.killed);
-    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.writeHead(200, { 'Content-Type': 'application/json', ...CORS_HEADERS });
     res.end(JSON.stringify({ running, lastStdout }));
     return;
   }
 
-  res.writeHead(404, { 'Content-Type': 'application/json' });
+  res.writeHead(404, { 'Content-Type': 'application/json', ...CORS_HEADERS });
   res.end(JSON.stringify({ error: 'not-found' }));
 });
 

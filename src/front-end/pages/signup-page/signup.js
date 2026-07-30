@@ -27,10 +27,19 @@ function initSignupPage(rootWindow = window, rootDocument = document) {
   const inviteInput = rootDocument.querySelector('.sign-up-thq-textinput-elm1');
   const nameInput = rootDocument.querySelector('.sign-up-thq-textinput-elm2');
   const phoneInput = rootDocument.querySelector('.sign-up-thq-textinput-elm3');
+  const emailInput = rootDocument.querySelector('.sign-up-thq-textinput-elm4');
+  const usernameInput = rootDocument.querySelector('.sign-up-thq-textinput-elm5');
+  const passwordInput = rootDocument.querySelector('.sign-up-thq-textinput-elm6');
   const status = rootDocument.createElement('p');
   status.style.marginTop = '12px';
   status.style.fontSize = '0.95rem';
   form.appendChild(status);
+
+  const isPreviewServer = rootWindow.location.origin.includes('5500');
+  if (isPreviewServer) {
+    localStorage.removeItem('beaconSignedIn');
+    localStorage.removeItem('beaconUserName');
+  }
 
   const redirectTarget = new URLSearchParams(rootWindow.location.search).get('redirect') || 'respond.html';
   // Normalize common short redirect values to the actual respond page path
@@ -39,27 +48,52 @@ function initSignupPage(rootWindow = window, rootDocument = document) {
     normalizedRedirect = '../respond-page/respond.html';
   }
 
-  const finishSignup = (name) => {
+  const finishSignup = (name, userData = {}) => {
     localStorage.setItem('beaconSignedIn', 'true');
-    localStorage.setItem('beaconUserName', name || 'Responder');
+    localStorage.setItem('beaconUserName', name || userData.name || 'Responder');
+    localStorage.setItem('beaconUsername', userData.username || userData.email || '');
+    localStorage.setItem('beaconEmail', userData.email || '');
+    localStorage.setItem('beaconPhone', userData.phone || '');
+    localStorage.setItem('beaconInviteCode', userData.inviteCode || '');
     rootWindow.location.href = normalizedRedirect;
   };
 
+  const renderStatus = (message, color) => {
+    status.textContent = message;
+    status.style.color = color;
+  };
+
+  const startBackendLauncher = async () => {
+    if (!isPreviewServer) return;
+
+    try {
+      await fetch('http://127.0.0.1:4000/start', {
+        method: 'GET',
+        mode: 'cors',
+      });
+    } catch (error) {
+      // Ignore launcher failures; signup will still attempt backend candidates.
+    }
+  };
+
   button.addEventListener('click', async () => {
+    await startBackendLauncher();
+
     const payload = {
       inviteCode: inviteInput.value.trim(),
       name: nameInput.value.trim(),
       phone: phoneInput.value.trim(),
+      email: emailInput.value.trim(),
+      username: usernameInput.value.trim() || emailInput.value.trim(),
+      password: passwordInput.value.trim(),
     };
 
-    if (!payload.inviteCode || !payload.name || !payload.phone) {
-      status.textContent = 'Please fill in all fields.';
-      status.style.color = '#c53030';
+    if (!payload.inviteCode || !payload.name || !payload.email || !payload.password) {
+      renderStatus('Please provide an invite code, name, email, and password.', '#c53030');
       return;
     }
 
-    status.textContent = 'Signing you up...';
-    status.style.color = '#4a5568';
+    renderStatus('Signing you up...', '#4a5568');
 
     try {
         async function postToCandidates(payload, candidates) {
@@ -96,21 +130,21 @@ function initSignupPage(rootWindow = window, rootDocument = document) {
         const result = await postToCandidates(payload, candidates);
 
         if (!result.ok) {
-          throw new Error(result.data && result.data.error ? result.data.error : 'Signup failed');
+          const message = result.data && result.data.error ? result.data.error : 'Signup failed';
+          const details = result.data && result.data.details ? ` ${result.data.details}` : '';
+          throw new Error(`${message}${details}`);
         }
 
         // Show different messages depending on whether this was a new signup or a login
         const action = result.data && result.data.action;
         if (action === 'login') {
-          status.textContent = `Welcome back, ${result.data.name}! You are now logged in.`;
+          renderStatus(`Welcome back, ${result.data.name}! You are now logged in.`, '#2f855a');
         } else {
-          status.textContent = `Signed up successfully for ${result.data.name}.`;
+          renderStatus(`Signed up successfully for ${result.data.name}.`, '#2f855a');
         }
-        status.style.color = '#2f855a';
-        finishSignup(result.data.name);
+        finishSignup(result.data.name, result.data);
     } catch (error) {
-      status.textContent = error.message;
-      status.style.color = '#c53030';
+      renderStatus(error.message, '#c53030');
     }
   });
 }

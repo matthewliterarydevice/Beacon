@@ -9,7 +9,8 @@
     "react-dom": "^17.0.2"
   },
   "scripts": {
-    "start": "node src/back-end/server.js"
+    "start": "node src/back-end/server.js",
+    "launch": "node scripts/launcher.js"
   },
   "devDependencies": {}
 }

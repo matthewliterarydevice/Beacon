@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="english">
+  <head>
+    <title>Settings - Beacon</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" />
+    <link rel="stylesheet" href="../../styles/style.css" />
+    <link rel="stylesheet" href="./settings.css" />
+  </head>
+  <body>
+    <script>
+      (function () {
+        if (localStorage.getItem('beaconSignedIn') !== 'true') {
+          window.location.href = '../login-page/login.html?redirect=settings-page/settings.html';
+        }
+      })();
+    </script>
+    <div class="settings-page">
+      <div class="settings-card">
+        <div class="settings-header">
+          <h1>Account settings</h1>
+          <p>View your profile details and sign out when you are done.</p>
+        </div>
+        <div class="settings-section">
+          <div class="settings-row">
+            <span class="settings-label">Name</span>
+            <span id="settingsName" class="settings-value">-</span>
+          </div>
+          <div class="settings-row">
+            <span class="settings-label">Username</span>
+            <span id="settingsUsername" class="settings-value">-</span>
+          </div>
+          <div class="settings-row">
+            <span class="settings-label">Phone</span>
+            <span id="settingsPhone" class="settings-value">-</span>
+          </div>
+          <div class="settings-row">
+            <span class="settings-label">Invite code</span>
+            <span id="settingsInviteCode" class="settings-value">-</span>
+          </div>
+        </div>
+        <button id="logoutButton" class="settings-logout-button">Logout</button>
+      </div>
+    </div>
+
+    <nav class="bottom-nav">
+      <a href="../learn-page/learn.html" class="bottom-nav-item" data-tab="learn">
+        <span class="bottom-nav-label">Learn</span>
+      </a>
+      <a href="../emergency-page/emergency.html" class="bottom-nav-item" data-tab="emergency">
+        <span class="bottom-nav-label">Emergency</span>
+      </a>
+      <a href="../respond-page/respond.html" class="bottom-nav-item" data-tab="respond">
+        <span class="bottom-nav-label">Respond</span>
+      </a>
+    </nav>
+
+    <script src="./settings.js"></script>
+  </body>
+</html>
