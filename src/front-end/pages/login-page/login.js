@@ -27,6 +27,16 @@ function initLoginPage(rootWindow = window, rootDocument = document) {
   status.style.fontSize = '0.95rem';
   form.appendChild(status);
 
+  const setFieldError = (field, hasError) => {
+    if (!field) return;
+    field.classList.toggle('input-error', hasError);
+  };
+
+  const clearFieldErrors = () => {
+    setFieldError(usernameInput, false);
+    setFieldError(passwordInput, false);
+  };
+
   const redirectTarget = new URLSearchParams(rootWindow.location.search).get('redirect') || 'respond.html';
   let normalizedRedirect = redirectTarget;
   if (redirectTarget === 'respond.html' || redirectTarget === 'respond') {
@@ -49,10 +59,13 @@ function initLoginPage(rootWindow = window, rootDocument = document) {
   };
 
   button.addEventListener('click', async () => {
+    clearFieldErrors();
     const username = usernameInput.value.trim();
     const password = passwordInput.value.trim();
 
     if (!username || !password) {
+      if (!username) setFieldError(usernameInput, true);
+      if (!password) setFieldError(passwordInput, true);
       renderStatus('Please enter your email or username and password.', '#c53030');
       return;
     }
@@ -62,6 +75,7 @@ function initLoginPage(rootWindow = window, rootDocument = document) {
     try {
       const candidates = buildLoginCandidates(rootWindow.location.origin);
       let lastErr = null;
+      let receivedResponse = false;
       for (const url of candidates) {
         try {
           const response = await fetch(url, {
@@ -70,6 +84,7 @@ function initLoginPage(rootWindow = window, rootDocument = document) {
             body: JSON.stringify({ email: username, username, password }),
           });
 
+          receivedResponse = true;
           const text = await response.text();
           let data = {};
           if (text) {
@@ -85,16 +100,27 @@ function initLoginPage(rootWindow = window, rootDocument = document) {
 
             const message = data.error || 'Login failed';
             const details = data.details ? ` ${data.details}` : '';
-            throw new Error(`${message}${details}`);
+            lastErr = new Error(`${message}${details}`);
+            break;
           }
 
-          lastErr = new Error(data.error || 'Login failed');
+          const message = (data && data.error) ? data.error : 'Invalid username or password.';
+          lastErr = new Error(message);
+          break;
         } catch (error) {
           lastErr = error;
         }
       }
 
-      throw lastErr || new Error('Unable to reach the login server');
+      if (lastErr && (lastErr.message === 'Failed to fetch' || lastErr.message.includes('NetworkError') || !receivedResponse)) {
+        setFieldError(usernameInput, true);
+        setFieldError(passwordInput, true);
+        renderStatus('Unable to reach the login server. Please check your backend.', '#c53030');
+      } else {
+        setFieldError(usernameInput, true);
+        setFieldError(passwordInput, true);
+        renderStatus(lastErr ? lastErr.message : 'Invalid username or password.', '#c53030');
+      }
     } catch (error) {
       renderStatus(error.message, '#c53030');
     }

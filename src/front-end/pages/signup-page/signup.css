@@ -32,7 +32,7 @@ body {
 }
 
 .sign-up-thq-joinasaresponder-elm {
-  gap: clamp(24px, 4vw, 48px);
+  gap: clamp(16px, 3vw, 24px);
   display: flex;
   align-self: stretch;
   align-items: flex-start;
@@ -62,7 +62,7 @@ body {
 }
 
 .sign-up-thq-form-elm {
-  gap: 16px;
+  gap: 20px;
   display: flex;
   align-self: stretch;
   align-items: flex-start;
@@ -82,6 +82,7 @@ body {
   line-height: 24px;
   font-stretch: normal;
   text-decoration: none;
+  margin-bottom: 4px;
 }
 
 .sign-up-thq-text-elm3 {
@@ -89,7 +90,7 @@ body {
 }
 
 .sign-up-thq-input-elm {
-  gap: 16px;
+  gap: 12px;
   display: flex;
   width: 100%;
   align-items: stretch;
@@ -101,8 +102,9 @@ body {
 .sign-up-thq-invitecode-elm2,
 .sign-up-thq-invitecode-elm3,
 .sign-up-thq-invitecode-elm4,
-.sign-up-thq-invitecode-elm5 {
-  gap: 4px;
+.sign-up-thq-invitecode-elm5,
+.sign-up-thq-invitecode-elm6 {
+  gap: 6px;
   width: 100%;
   max-width: none;
   display: flex;
@@ -112,9 +114,7 @@ body {
 }
 
 .sign-up-thq-invitecode-elm1 {
-  max-width: 420px;
-  margin-left: auto;
-  margin-right: auto;
+  width: 100%;
 }
 
 .sign-up-thq-text-elm5,
@@ -133,25 +133,31 @@ body {
 .sign-up-thq-textinput-elm2,
 .sign-up-thq-textinput-elm3,
 .sign-up-thq-textinput-elm4,
-.sign-up-thq-textinput-elm5 {
+.sign-up-thq-textinput-elm5,
+.sign-up-thq-textinput-elm6 {
   gap: 4px;
   color: rgba(0, 0, 0, 1);
   display: block;
   width: 100%;
   max-width: 100%;
   min-height: 48px;
-  padding: 12px;
+  padding: 12px 14px;
   font-size: 16px;
   text-align: left;
   font-family: Inter;
   font-weight: 400;
-  border-color: rgba(233, 236, 239, 1);
+  border-color: rgba(203, 213, 225, 1);
   border-style: solid;
   border-width: 1px;
-  border-radius: 8px;
+  border-radius: 10px;
   background-color: rgba(255, 255, 255, 1);
   box-sizing: border-box;
   align-self: stretch;
+}
+
+.input-error {
+  border-color: #dc2626 !important;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.14);
 }
 
 .sign-up-thq-button-elm1 {
@@ -178,38 +184,22 @@ body {
 }
 
 .sign-up-thq-button-elm2 {
-  gap: 11.220657348632812px;
+  gap: 8px;
   display: flex;
   width: 100%;
-  max-width: 280px;
-  margin: 16px auto 0 auto;
+  margin: 0;
   padding: 12px 18px;
   overflow: hidden;
   align-items: center;
-  border-radius: 13.464789390563965px;
+  border-radius: 8px;
   justify-content: center;
   box-sizing: border-box;
+  align-self: stretch;
   cursor: pointer;
   font-family: Inter, sans-serif;
-  background-color: var(--dl-color-theme-primary1);
+  background-color: var(--dl-color-default-secondary);
   color: var(--dl-color-theme-secondary1);
-  border: 1px solid transparent;
-  outline: none;
-}
-
-.sign-up-thq-button-elm2:hover {
-  opacity: 0.95;
-  background-color: var(--dl-color-theme-primary2);
-}
-
-.sign-up-thq-button-elm2:focus-visible {
-  outline: 2px solid var(--dl-color-default-secondary);
-  outline-offset: 3px;
-}
-
-.sign-up-thq-text-elm8 {
-  color: rgba(255, 255, 255, 1);
-  width: auto;
+  border: none;
   height: auto;
   font-size: 16px;
   font-style: Semi Bold;

@@ -35,6 +35,16 @@ function initSignupPage(rootWindow = window, rootDocument = document) {
   status.style.fontSize = '0.95rem';
   form.appendChild(status);
 
+  const setFieldError = (field, hasError) => {
+    if (field) {
+      field.classList.toggle('input-error', hasError);
+    }
+  };
+
+  const clearFieldErrors = () => {
+    setFieldError(usernameInput, false);
+  };
+
   const isPreviewServer = rootWindow.location.origin.includes('5500');
   if (isPreviewServer) {
     localStorage.removeItem('beaconSignedIn');
@@ -77,6 +87,7 @@ function initSignupPage(rootWindow = window, rootDocument = document) {
   };
 
   button.addEventListener('click', async () => {
+    clearFieldErrors();
     await startBackendLauncher();
 
     const payload = {
@@ -131,6 +142,9 @@ function initSignupPage(rootWindow = window, rootDocument = document) {
 
         if (!result.ok) {
           const message = result.data && result.data.error ? result.data.error : 'Signup failed';
+          if (message.toLowerCase().includes('username')) {
+            setFieldError(usernameInput, true);
+          }
           const details = result.data && result.data.details ? ` ${result.data.details}` : '';
           throw new Error(`${message}${details}`);
         }

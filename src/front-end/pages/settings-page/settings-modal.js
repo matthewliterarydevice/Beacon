@@ -3,6 +3,7 @@ function initSettingsModal(rootWindow = window, rootDocument = document) {
   const overlay = rootDocument.getElementById('settingsModalOverlay');
   const closeButton = rootDocument.getElementById('settingsModalClose');
   const logoutButton = rootDocument.getElementById('settingsModalLogout');
+  const deleteButton = rootDocument.getElementById('settingsModalDelete');
 
   const nameEl = rootDocument.getElementById('settingsModalName');
   const usernameEl = rootDocument.getElementById('settingsModalUsername');
@@ -23,6 +24,59 @@ function initSettingsModal(rootWindow = window, rootDocument = document) {
       element.value = value || '';
     }
   };
+
+  const clearFieldErrors = () => {
+    if (usernameEl) {
+      usernameEl.classList.remove('input-error');
+    }
+  };
+
+  const buildProfileCandidates = (origin) => {
+    const localCandidates = [
+      'http://127.0.0.1:3000/api/profile',
+      'http://127.0.0.1:3001/api/profile',
+      'http://127.0.0.1:3002/api/profile',
+      'http://127.0.0.1:3003/api/profile',
+    ];
+
+    if (!origin || origin === 'null' || origin.startsWith('file://')) {
+      return localCandidates;
+    }
+
+    if (origin.includes('5500')) {
+      return localCandidates;
+    }
+
+    return ["" + origin + "/api/profile"];
+  };
+
+  async function postToCandidates(payload, candidates, method = 'POST') {
+    let lastErr = null;
+    for (const url of candidates) {
+      try {
+        const resp = await fetch(url, {
+          method,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        const text = await resp.text();
+        let data = {};
+        if (text) {
+          try { data = JSON.parse(text); } catch { data = { error: text }; }
+        }
+
+        if (resp.ok) return { ok: true, data };
+
+        return { ok: false, data };
+      } catch (err) {
+        lastErr = err;
+        continue;
+      }
+    }
+
+    throw lastErr || new Error('Failed to reach profile server');
+  }
 
   const openModal = () => {
     if (!overlay) return;
@@ -62,6 +116,8 @@ function initSettingsModal(rootWindow = window, rootDocument = document) {
 
   if (saveButton) {
     saveButton.addEventListener('click', async () => {
+      clearFieldErrors();
+
       try {
         const payload = {
           currentEmail: rootWindow.localStorage.getItem('beaconEmail') || '',
@@ -74,17 +130,18 @@ function initSettingsModal(rootWindow = window, rootDocument = document) {
           newPassword: newPasswordEl && newPasswordEl.value.trim(),
         };
 
-        const response = await fetch('/api/profile', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        });
+        const candidates = buildProfileCandidates(rootWindow.location.origin);
+        const result = await postToCandidates(payload, candidates, 'POST');
 
-        const data = await response.json().catch(() => ({}));
-        if (!response.ok) {
-          throw new Error(data.error || 'Could not save settings.');
+        if (!result.ok) {
+          const errMsg = result.data && result.data.error ? result.data.error : 'Could not save settings.';
+          if (errMsg.toLowerCase().includes('username')) {
+            if (usernameEl) usernameEl.classList.add('input-error');
+          }
+          throw new Error(errMsg);
         }
 
+        const data = result.data || {};
         rootWindow.localStorage.setItem('beaconUserName', data.name || payload.name || '');
         rootWindow.localStorage.setItem('beaconUsername', data.username || payload.username || '');
         rootWindow.localStorage.setItem('beaconEmail', data.email || payload.email || '');
@@ -93,6 +150,39 @@ function initSettingsModal(rootWindow = window, rootDocument = document) {
           rootWindow.localStorage.setItem('beaconPasswordUpdated', 'true');
         }
         closeModal();
+      } catch (error) {
+        window.alert(error.message);
+      }
+    });
+  }
+
+  if (deleteButton) {
+    deleteButton.addEventListener('click', async () => {
+      const confirmed = rootWindow.confirm('Delete your account permanently? This cannot be undone.');
+      if (!confirmed) return;
+
+      try {
+        const payload = {
+          currentEmail: rootWindow.localStorage.getItem('beaconEmail') || '',
+          currentUsername: rootWindow.localStorage.getItem('beaconUsername') || '',
+          currentPhone: rootWindow.localStorage.getItem('beaconPhone') || '',
+        };
+
+        const candidates = buildProfileCandidates(rootWindow.location.origin);
+        const result = await postToCandidates(payload, candidates, 'DELETE');
+
+        if (!result.ok) {
+          const errMsg = result.data && result.data.error ? result.data.error : 'Could not delete account.';
+          throw new Error(errMsg);
+        }
+
+        rootWindow.localStorage.removeItem('beaconSignedIn');
+        rootWindow.localStorage.removeItem('beaconUserName');
+        rootWindow.localStorage.removeItem('beaconUsername');
+        rootWindow.localStorage.removeItem('beaconEmail');
+        rootWindow.localStorage.removeItem('beaconPhone');
+        rootWindow.localStorage.removeItem('beaconInviteCode');
+        rootWindow.location.href = '../login-page/login.html';
       } catch (error) {
         window.alert(error.message);
       }

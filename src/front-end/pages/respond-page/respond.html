@@ -101,6 +101,24 @@
                     <span class="respond-thq-text-elm20">Can’t respond</span>
                   </button>
                 </div>
+                <!-- Nav panel (hidden by default). Contains a placeholder map canvas that can be swapped for a real Google Maps embed. -->
+                <div id="respondNavPanel" class="respond-nav-panel" aria-hidden="true">
+                  <div class="respond-nav-header">Navigation started</div>
+                  <div class="respond-nav-body">
+                    <div class="respond-nav-destination">Carral St and Hastings</div>
+                    <div class="respond-nav-eta">ETA: 3 min</div>
+                    <div class="respond-nav-map" aria-hidden="false">
+                      <div class="respond-map-canvas">
+                        <div class="respond-map-marker" aria-hidden="true"></div>
+                        <div class="respond-map-label">Map preview (Google Maps placeholder)</div>
+                      </div>
+                    </div>
+                    <div class="respond-nav-actions">
+                      <a id="openDirections" class="respond-nav-link" href="https://www.google.com/maps/search/Carral+St+and+Hastings" target="_blank" rel="noopener">Open directions</a>
+                      <button id="closeNav" class="respond-nav-close">Close</button>
+                    </div>
+                  </div>
+                </div>
               </div>
               <div class="respond-thq-recentalerts-elm">
                 <div class="respond-thq-line1-elm"></div>
@@ -146,14 +164,131 @@
       </div>
     </div>
     <script>
-      document.getElementById('acceptButton').addEventListener('click', function () {
-        console.log('Accept and go pressed');
-      });
-      document.getElementById('declineButton').addEventListener('click', function () {
-        console.log("Can't respond pressed");
-      });
+      (function(){
+        const acceptButton = document.getElementById('acceptButton');
+        const declineButton = document.getElementById('declineButton');
+        const actionMessage = document.getElementById('respondActionMessage');
+        const activeAlert = document.querySelector('.respond-thq-active-alert-elm');
+        const navPanel = document.getElementById('respondNavPanel');
+        const openDirections = document.getElementById('openDirections');
+        const closeNav = document.getElementById('closeNav');
+
+        function showNavPanel(){
+          if(!navPanel) return;
+          navPanel.setAttribute('aria-hidden', 'false');
+          navPanel.style.bottom = '0';
+        }
+        function hideNavPanel(){
+          if(!navPanel) return;
+          navPanel.setAttribute('aria-hidden', 'true');
+          navPanel.style.bottom = '-320px';
+        }
+
+        if(acceptButton){
+          acceptButton.addEventListener('click', function(){
+            // pulse animation
+            acceptButton.classList.add('accept-pulse');
+            acceptButton.disabled = true;
+            if(actionMessage) actionMessage.textContent = 'Accepted — launching navigation...';
+            if(activeAlert){
+              const t = activeAlert.querySelector('.respond-thq-text-elm12');
+              const s = activeAlert.querySelector('.respond-thq-text-elm13');
+              if(t) t.textContent = 'Accepted Alert';
+              if(s) s.textContent = 'Response recorded';
+            }
+            setTimeout(()=>{
+              showNavPanel();
+              if(actionMessage) actionMessage.textContent = 'Navigation started — follow directions below.';
+            }, 380);
+            setTimeout(()=>{
+              acceptButton.classList.remove('accept-pulse');
+              acceptButton.disabled = false;
+            }, 420);
+          });
+        }
+
+        if(declineButton){
+          let collapseTimer = null;
+          const snackbar = document.getElementById('respondSnackbar');
+          const snackbarUndo = document.getElementById('snackbarUndo');
+
+          function showSnackbar() {
+            if (!snackbar) return;
+            snackbar.setAttribute('aria-hidden', 'false');
+            snackbar.classList.add('visible');
+          }
+          function hideSnackbar() {
+            if (!snackbar) return;
+            snackbar.setAttribute('aria-hidden', 'true');
+            snackbar.classList.remove('visible');
+          }
+
+          declineButton.addEventListener('click', function(){
+            // If nav panel open, close it. Otherwise collapse the active alert and show undo.
+            const panelOpen = navPanel && navPanel.getAttribute('aria-hidden') === 'false';
+            if(panelOpen){
+              hideNavPanel();
+              if(actionMessage) actionMessage.textContent = 'Navigation closed.';
+              return;
+            }
+            if(!activeAlert) return;
+
+            const isCollapsed = activeAlert.classList.contains('collapsed');
+            if(isCollapsed){
+              // Expand the alert
+              activeAlert.classList.remove('collapsed');
+              if(actionMessage) actionMessage.textContent = 'Alert expanded.';
+              declineButton.querySelector('span').textContent = 'Can’t respond';
+              hideSnackbar();
+              if(collapseTimer){ clearTimeout(collapseTimer); collapseTimer = null; }
+              return;
+            }
+
+            // Collapse and offer undo
+            activeAlert.classList.add('collapsed');
+            if(actionMessage) actionMessage.textContent = 'Marked unavailable.';
+            declineButton.querySelector('span').textContent = 'Expand';
+            showSnackbar();
+
+            // auto-remove collapse after 6s (simulate sending state); allow undo
+            collapseTimer = setTimeout(() => {
+              hideSnackbar();
+              collapseTimer = null;
+              // keep collapsed state but remove buttons to indicate finalised
+              activeAlert.classList.add('final');
+              if(actionMessage) actionMessage.textContent = 'Marked unavailable — saved.';
+            }, 6000);
+          });
+
+          if(snackbarUndo){
+            snackbarUndo.addEventListener('click', function(){
+              if(collapseTimer){ clearTimeout(collapseTimer); collapseTimer = null; }
+              if(activeAlert){
+                activeAlert.classList.remove('collapsed');
+                activeAlert.classList.remove('final');
+              }
+              hideSnackbar();
+              if(actionMessage) actionMessage.textContent = 'Undo — alert restored.';
+              if(declineButton) declineButton.querySelector('span').textContent = 'Can’t respond';
+            });
+          }
+        });
+        }
+
+        if(closeNav){
+          closeNav.addEventListener('click', function(){ hideNavPanel(); if(actionMessage) actionMessage.textContent = 'Navigation closed.'; });
+        }
+        if(openDirections){
+          openDirections.addEventListener('click', function(){ hideNavPanel(); if(actionMessage) actionMessage.textContent = 'Opening directions in a new tab.'; });
+        }
+      })();
     </script>
     <script src="../settings-page/settings-modal.js"></script>
+    <!-- Snackbar for undoing a "Can't respond" action -->
+    <div id="respondSnackbar" class="respond-snackbar" aria-hidden="true">
+      <span class="respond-snackbar-text">Marked unavailable.</span>
+      <button id="snackbarUndo" class="respond-snackbar-button">Undo</button>
+    </div>
     <div id="settingsModalOverlay" class="settings-modal-overlay" aria-hidden="true">
       <div class="settings-modal-card" role="dialog" aria-modal="true" aria-labelledby="settingsModalTitle">
         <button type="button" id="settingsModalClose" class="settings-modal-close" aria-label="Close settings">×</button>
@@ -176,7 +311,7 @@
           </div>
           <div class="settings-modal-row">
             <label class="settings-modal-label" for="settingsModalPhone">Phone</label>
-            <input id="settingsModalPhone" class="settings-modal-input" type="text" placeholder="123-456-7890 (optional)" />
+            <input id="settingsModalPhone" class="settings-modal-input" type="tel" placeholder="123-456-7890 (optional)" />
           </div>
           <div class="settings-modal-row">
             <span class="settings-modal-label">Invite code</span>
@@ -188,6 +323,7 @@
           </div>
         </div>
         <button type="button" id="settingsModalSave" class="settings-modal-save">Save changes</button>
+        <button type="button" id="settingsModalDelete" class="settings-modal-delete">Delete account</button>
         <button type="button" id="settingsModalLogout" class="settings-modal-logout">Logout</button>
       </div>
     </div>

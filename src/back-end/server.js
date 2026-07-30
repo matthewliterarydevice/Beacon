@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 const DEFAULT_PORT = process.env.PORT || 3000;
+const DEFAULT_HOST = process.env.HOST || '127.0.0.1';
 const FRONT_END_ROOT = path.join(__dirname, '..');
 const USERS_FOLDER = path.join(__dirname, 'data', 'users');
 const INVITE_CODES_FILE = path.join(__dirname, 'data', 'invite-codes.json');
@@ -36,6 +37,33 @@ function safeUserId(input) {
     .slice(0, 40);
 }
 
+function normalizeValue(value) {
+  return String(value || '').trim().toLowerCase();
+}
+
+function findUserFilePathByUsername(username, excludeFilePath) {
+  if (!username || !fs.existsSync(USERS_FOLDER)) {
+    return null;
+  }
+
+  const normalizedUsername = normalizeValue(username);
+  return fs.readdirSync(USERS_FOLDER)
+    .filter((file) => file.endsWith('.json'))
+    .map((file) => path.join(USERS_FOLDER, file))
+    .find((filePath) => {
+      if (excludeFilePath && filePath === excludeFilePath) {
+        return false;
+      }
+
+      try {
+        const record = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+        return normalizeValue(record.username) === normalizedUsername;
+      } catch (err) {
+        return false;
+      }
+    });
+}
+
 function getValidInviteCodes() {
   if (!fs.existsSync(INVITE_CODES_FILE)) {
     const error = new Error('Invite code list file is missing.');
@@ -58,7 +86,7 @@ function getValidInviteCodes() {
   throw error;
 }
 
-function findUserFilePathByIdentity({ currentEmail, currentUsername, currentPhone }) {
+function findUserFilePathByIdentity({ currentEmail, currentUsername, currentPhone, fallbackEmail, fallbackUsername, fallbackPhone }) {
   if (!fs.existsSync(USERS_FOLDER)) {
     return null;
   }
@@ -67,20 +95,37 @@ function findUserFilePathByIdentity({ currentEmail, currentUsername, currentPhon
     .filter((file) => file.endsWith('.json'))
     .map((file) => path.join(USERS_FOLDER, file));
 
+  const matchesIdentity = (record, email, username, phone) => {
+    const recordEmail = normalizeValue(record.email);
+    const recordUsername = normalizeValue(record.username);
+    const recordPhone = normalizeValue(record.phone);
+
+    return (email && recordEmail === normalizeValue(email))
+      || (username && recordUsername === normalizeValue(username))
+      || (phone && recordPhone === normalizeValue(phone));
+  };
+
   for (const filePath of candidates) {
     try {
       const record = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-      const email = String(record.email || '').trim();
-      const username = String(record.username || '').trim();
-      const phone = String(record.phone || '').trim();
-
-      if ((currentEmail && email === currentEmail)
-          || (currentUsername && username === currentUsername)
-          || (currentPhone && phone === currentPhone)) {
+      if (matchesIdentity(record, currentEmail, currentUsername, currentPhone)) {
         return filePath;
       }
     } catch (err) {
       continue;
+    }
+  }
+
+  if (fallbackEmail || fallbackUsername || fallbackPhone) {
+    for (const filePath of candidates) {
+      try {
+        const record = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+        if (matchesIdentity(record, fallbackEmail, fallbackUsername, fallbackPhone)) {
+          return filePath;
+        }
+      } catch (err) {
+        continue;
+      }
     }
   }
 
@@ -109,7 +154,15 @@ function updateResponderProfile(request, response) {
         return sendJson(response, 400, { error: 'Current email, username, or phone is required to update profile.' });
       }
 
-      const filePath = findUserFilePathByIdentity({ currentEmail, currentUsername, currentPhone });
+      let filePath = findUserFilePathByIdentity({ currentEmail, currentUsername, currentPhone });
+      if (!filePath) {
+        filePath = findUserFilePathByIdentity({
+          fallbackEmail: email,
+          fallbackUsername: username,
+          fallbackPhone: phone,
+        });
+      }
+
       if (!filePath) {
         return sendJson(response, 404, { error: 'Account not found.' });
       }
@@ -124,10 +177,45 @@ function updateResponderProfile(request, response) {
         password: newPassword || existing.password,
       };
 
+      const duplicateUsernamePath = findUserFilePathByUsername(username, filePath);
+      if (duplicateUsernamePath) {
+        return sendJson(response, 400, { error: 'That username is already taken.' });
+      }
+
       fs.writeFileSync(filePath, JSON.stringify(updated, null, 2));
       sendJson(response, 200, updated);
     } catch (error) {
       sendJson(response, 400, { error: 'Could not update profile.' });
+    }
+  });
+}
+
+function deleteResponderProfile(request, response) {
+  let body = '';
+  request.on('data', (chunk) => {
+    body += chunk;
+  });
+
+  request.on('end', () => {
+    try {
+      const incoming = JSON.parse(body);
+      const currentEmail = String(incoming.currentEmail || '').trim();
+      const currentUsername = String(incoming.currentUsername || '').trim();
+      const currentPhone = String(incoming.currentPhone || '').trim();
+
+      if (!currentEmail && !currentUsername && !currentPhone) {
+        return sendJson(response, 400, { error: 'Current email, username, or phone is required to delete profile.' });
+      }
+
+      const filePath = findUserFilePathByIdentity({ currentEmail, currentUsername, currentPhone });
+      if (!filePath) {
+        return sendJson(response, 404, { error: 'Account not found.' });
+      }
+
+      fs.unlinkSync(filePath);
+      sendJson(response, 200, { ok: true });
+    } catch (error) {
+      sendJson(response, 400, { error: 'Could not delete profile.' });
     }
   });
 }
@@ -177,24 +265,22 @@ function saveResponder(request, response) {
       };
 
       fs.mkdirSync(USERS_FOLDER, { recursive: true });
-      const fileName = `${safeUserId(phone || name)}.json`;
+
+      const fileName = `${safeUserId(record.username || email || phone || name)}.json`;
       const filePath = path.join(USERS_FOLDER, fileName);
 
-      const alreadyExists = fs.existsSync(filePath);
-      if (alreadyExists) {
-        try {
-          const existing = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-          existing.action = 'login';
-          sendJson(response, 200, existing);
-        } catch (err) {
-          record.action = 'login';
-          sendJson(response, 200, record);
-        }
-      } else {
-        fs.writeFileSync(filePath, JSON.stringify(record, null, 2));
-        record.action = 'signup';
-        sendJson(response, 200, record);
+      if (fs.existsSync(filePath)) {
+        return sendJson(response, 400, { error: 'That username is already taken.' });
       }
+
+      const duplicateUserPath = findUserFilePathByUsername(normalizeValue(record.username));
+      if (duplicateUserPath) {
+        return sendJson(response, 400, { error: 'That username is already taken.' });
+      }
+
+      fs.writeFileSync(filePath, JSON.stringify(record, null, 2));
+      record.action = 'signup';
+      sendJson(response, 200, record);
     } catch (error) {
       sendJson(response, 400, { error: 'Could not read signup data.' });
     }
@@ -280,7 +366,7 @@ const createServer = () => http.createServer((request, response) => {
   const parsedUrl = new URL(request.url, 'http://localhost');
   const pathName = parsedUrl.pathname;
 
-  if (request.method === 'OPTIONS' && (pathName === '/api/signup' || pathName === '/api/login')) {
+  if (request.method === 'OPTIONS' && (pathName === '/api/signup' || pathName === '/api/login' || pathName === '/api/profile')) {
     response.writeHead(204, {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
@@ -297,6 +383,10 @@ const createServer = () => http.createServer((request, response) => {
     return loginResponder(request, response);
   }
 
+  if (request.method === 'DELETE' && pathName === '/api/profile') {
+    return deleteResponderProfile(request, response);
+  }
+
   if (request.method === 'POST' && pathName === '/api/profile') {
     return updateResponderProfile(request, response);
   }
@@ -304,21 +394,34 @@ const createServer = () => http.createServer((request, response) => {
   return serveFile(request, response, pathName);
 });
 
-function startServer(port) {
+function startServer(port, host = DEFAULT_HOST) {
   const server = createServer();
   server.on('error', (error) => {
     if (error.code === 'EADDRINUSE' && port < 3010) {
       console.log(`Port ${port} is busy; trying ${port + 1} instead.`);
-      startServer(port + 1);
+      startServer(port + 1, host);
       return;
     }
 
     throw error;
   });
 
-  server.listen(port, () => {
-    console.log(`Beacon signup server is running at http://localhost:${port}`);
+  server.listen(port, host, () => {
+    console.log(`Beacon signup server is running at http://${host}:${port}`);
   });
 }
 
-startServer(DEFAULT_PORT);
+if (require.main === module) {
+  startServer(DEFAULT_PORT);
+}
+
+module.exports = {
+  createServer,
+  startServer,
+  safeUserId,
+  findUserFilePathByIdentity,
+  updateResponderProfile,
+  saveResponder,
+  loginResponder,
+  serveFile,
+};

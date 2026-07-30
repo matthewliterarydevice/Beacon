@@ -19,8 +19,8 @@
   --dl-color-default-accent: rgba(255, 193, 7, 1);
   --dl-color-default-border: rgba(233, 236, 239, 1);
   --dl-color-flowkit-purple: rgba(123, 97, 255, 1);
-  --dl-color-theme-primary1: #BF4408;
-  --dl-color-theme-primary2: #E65103;
+  --dl-color-theme-primary1: #00B680;
+  --dl-color-theme-primary2: #0A8B6B;
   --dl-layout-size-maxwidth: 1400px;
   --dl-color-default-primary: rgba(0, 123, 255, 1);
   --dl-color-default-success: rgba(40, 167, 69, 1);
@@ -612,11 +612,7 @@
   font-size: 16px;
   font-style: normal;
   font-family: Inter;
-  font-weight: 700px;
-  font-stretch: normal;
-  letter-spacing: 0px;
-}
- 
+  font-weight: 700;
 @media(max-width: 991px) {
   .thq-grid-4 {
     grid-template-columns: 1fr 1fr 1fr;
@@ -697,4 +693,5 @@
   .thq-grid-auto-300 {
     grid-template-columns: 1fr;
   }
+}
 }

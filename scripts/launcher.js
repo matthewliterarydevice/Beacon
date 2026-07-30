@@ -25,7 +25,7 @@ function startBackend() {
       const s = chunk.toString();
       lastStdout += s;
       // console.log('[backend]', s);
-      const m = /Beacon signup server is running at (http:\\/\\/localhost:(\\d+))/i.exec(lastStdout);
+      const m = /Beacon signup server is running at (http:\\\\localhost:(\\d+))/i.exec(lastStdout);
       if (m) {
         resolve({ started: true, url: m[1], port: Number(m[2]) });
       }

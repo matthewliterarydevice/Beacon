@@ -77,6 +77,52 @@ test('OPTIONS /api/signup responds with CORS headers', async () => {
   }
 });
 
+test('OPTIONS /api/profile responds with CORS headers', async () => {
+  const projectRoot = path.join(__dirname, '..', '..', '..');
+  const serverProcess = spawn(process.execPath, [path.join(projectRoot, 'src', 'back-end', 'server.js')], {
+    cwd: projectRoot,
+    env: { ...process.env, PORT: '3117' },
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
+
+  let serverOutput = '';
+  serverProcess.stdout.on('data', (chunk) => {
+    serverOutput += chunk.toString();
+  });
+  serverProcess.stderr.on('data', (chunk) => {
+    serverOutput += chunk.toString();
+  });
+
+  try {
+    await waitForServer(3117);
+
+    const response = await new Promise((resolve, reject) => {
+      const req = require('node:http').request({
+        host: '127.0.0.1',
+        port: 3117,
+        path: '/api/profile',
+        method: 'OPTIONS',
+      }, (res) => {
+        let body = '';
+        res.setEncoding('utf8');
+        res.on('data', (chunk) => {
+          body += chunk;
+        });
+        res.on('end', () => resolve({ statusCode: res.statusCode, headers: res.headers, body }));
+      });
+
+      req.on('error', reject);
+      req.end();
+    });
+
+    assert.equal(response.statusCode, 204);
+    assert.equal(response.headers['access-control-allow-origin'], '*');
+  } finally {
+    serverProcess.kill('SIGTERM');
+    await new Promise((resolve) => setTimeout(resolve, 200));
+  }
+});
+
 test('buildSignupUrl uses the same origin when the page is served from Beacon', () => {
   assert.equal(buildSignupUrl('http://localhost:3001'), 'http://localhost:3001/api/signup');
   assert.equal(buildSignupUrl('http://127.0.0.1:3001'), 'http://127.0.0.1:3001/api/signup');
@@ -429,7 +475,7 @@ test('POST /api/signup saves a responder profile', async () => {
     assert.equal(payload.inviteCode, 'UGM-7X2K');
     assert.equal(payload.action, 'signup');
 
-    const savedFile = path.join(usersDir, '123-456-7890.json');
+    const savedFile = path.join(usersDir, 'avery.json');
     assert.equal(fs.existsSync(savedFile), true);
     const savedPayload = JSON.parse(fs.readFileSync(savedFile, 'utf8'));
     assert.equal(savedPayload.phone, '123-456-7890');
