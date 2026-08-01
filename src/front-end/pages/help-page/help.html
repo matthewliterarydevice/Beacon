@@ -28,7 +28,17 @@
 
         <h1 id="help-title" class="help-title">Help is being contacted</h1>
 
-        <div class="help-map-container"></div>
+        <div class="help-map-wrapper">
+          <div class="help-response-counter" aria-live="polite">
+            <span class="help-response-counter-label">People accepted</span>
+            <div class="help-response-counter-value-row">
+              <span id="helpResponseCounterValue" class="help-response-counter-value">0</span>
+              <span class="help-response-counter-caption">responders</span>
+            </div>
+          </div>
+
+          <div class="help-map-container"></div>
+        </div>
 
         <div class="help-bottom">
           <a href="../emergency-page/emergency.html" class="help-cancel-button">Cancel</a>
@@ -39,5 +49,30 @@
         </div>
       </section>
     </main>
+
+    <script>
+      (function () {
+        const counterValue = document.getElementById('helpResponseCounterValue');
+        if (!counterValue) return;
+
+        const storedValue = Number(localStorage.getItem('beaconAcceptedResponsesCount') || '3');
+        const targetValue = Number.isFinite(storedValue) && storedValue > 0 ? storedValue : 3;
+        const duration = 900;
+        const startTime = performance.now();
+
+        function animateCounter(now) {
+          const progress = Math.min(1, (now - startTime) / duration);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          const currentValue = Math.round(targetValue * eased);
+          counterValue.textContent = currentValue;
+
+          if (progress < 1) {
+            requestAnimationFrame(animateCounter);
+          }
+        }
+
+        requestAnimationFrame(animateCounter);
+      })();
+    </script>
   </body>
 </html>

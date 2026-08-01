@@ -93,6 +93,9 @@
                     </span>
                   </div>
                 </div>
+                <button type="button" class="respond-thq-compact-expand-btn" id="compactExpandButton" aria-label="Expand alert" title="Expand alert">
+                  <span aria-hidden="true">&#8250;</span>
+                </button>
                 <div class="respond-thq-buttons-elm">
                   <button id="acceptButton" class="respond-thq-frame20-elm">
                     <span class="respond-thq-text-elm19">Accept and go</span>
@@ -103,7 +106,9 @@
                 </div>
                 <!-- Nav panel (hidden by default). Contains a placeholder map canvas that can be swapped for a real Google Maps embed. -->
                 <div id="respondNavPanel" class="respond-nav-panel" aria-hidden="true">
-                  <div class="respond-nav-header">Navigation started</div>
+                  <div class="respond-nav-header">Navigation started
+                    <button id="closeNavTop" class="respond-nav-close-top" aria-label="Close navigation">×</button>
+                  </div>
                   <div class="respond-nav-body">
                     <div class="respond-nav-destination">Carral St and Hastings</div>
                     <div class="respond-nav-eta">ETA: 3 min</div>
@@ -169,9 +174,42 @@
         const declineButton = document.getElementById('declineButton');
         const actionMessage = document.getElementById('respondActionMessage');
         const activeAlert = document.querySelector('.respond-thq-active-alert-elm');
+        const headline = activeAlert ? activeAlert.querySelector('.respond-thq-text-elm14') : null;
         const navPanel = document.getElementById('respondNavPanel');
         const openDirections = document.getElementById('openDirections');
         const closeNav = document.getElementById('closeNav');
+        const closeNavTop = document.getElementById('closeNavTop');
+
+        // Live elapsed timer for the alert subtitle (e.g. "5 sec ago")
+        const timeLabel = document.querySelector('.respond-thq-text-elm13');
+        function parseInitialAgo(text){
+          if(!text) return Date.now();
+          const m = text.match(/(\d+)\s*(sec|secs|second|seconds|min|mins|minute|minutes|hr|hrs|hour|hours)\s*ago/i);
+          if(!m) return Date.now();
+          const n = parseInt(m[1],10);
+          const unit = m[2].toLowerCase();
+          let ms = 0;
+          if(unit.startsWith('sec')) ms = n*1000;
+          else if(unit.startsWith('min')) ms = n*60*1000;
+          else ms = n*60*60*1000;
+          return Date.now() - ms;
+        }
+        let alertStartTime = parseInitialAgo(timeLabel ? timeLabel.textContent : null);
+        function updateElapsed(){
+          const diff = Date.now() - alertStartTime;
+          const s = Math.floor(diff/1000);
+          if(!timeLabel) return;
+          if(s < 60) {
+            timeLabel.textContent = s + (s===1? ' sec ago' : ' sec ago');
+          } else if(s < 3600) {
+            const m = Math.floor(s/60);
+            timeLabel.textContent = m + (m===1? ' min ago' : ' min ago');
+          } else {
+            const h = Math.floor(s/3600);
+            timeLabel.textContent = h + (h===1? ' hr ago' : ' hrs ago');
+          }
+        }
+        setInterval(updateElapsed, 1000);
 
         function showNavPanel(){
           if(!navPanel) return;
@@ -186,6 +224,10 @@
 
         if(acceptButton){
           acceptButton.addEventListener('click', function(){
+            const counterKey = 'beaconAcceptedResponsesCount';
+            const currentCount = Number(localStorage.getItem(counterKey) || '0');
+            localStorage.setItem(counterKey, String(currentCount + 1));
+
             // pulse animation
             acceptButton.classList.add('accept-pulse');
             acceptButton.disabled = true;
@@ -211,6 +253,7 @@
           let collapseTimer = null;
           const snackbar = document.getElementById('respondSnackbar');
           const snackbarUndo = document.getElementById('snackbarUndo');
+          const compactExpandButton = document.getElementById('compactExpandButton');
 
           function showSnackbar() {
             if (!snackbar) return;
@@ -223,7 +266,19 @@
             snackbar.classList.remove('visible');
           }
 
-          declineButton.addEventListener('click', function(){
+          function expandAlert(){
+            if(!activeAlert) return;
+            activeAlert.classList.remove('compact');
+            if(headline) headline.textContent = 'Suspected overdose nearby';
+            if(actionMessage) actionMessage.textContent = 'Alert expanded.';
+            const declineLabel = declineButton.querySelector('span');
+            if(declineLabel) declineLabel.textContent = 'Can’t respond';
+            hideSnackbar();
+            if(collapseTimer){ clearTimeout(collapseTimer); collapseTimer = null; }
+          }
+
+          declineButton.addEventListener('click', function(e){
+            e.stopPropagation();
             // If nav panel open, close it. Otherwise collapse the active alert and show undo.
             const panelOpen = navPanel && navPanel.getAttribute('aria-hidden') === 'false';
             if(panelOpen){
@@ -233,50 +288,58 @@
             }
             if(!activeAlert) return;
 
-            const isCollapsed = activeAlert.classList.contains('collapsed');
-            if(isCollapsed){
-              // Expand the alert
-              activeAlert.classList.remove('collapsed');
-              if(actionMessage) actionMessage.textContent = 'Alert expanded.';
-              declineButton.querySelector('span').textContent = 'Can’t respond';
-              hideSnackbar();
-              if(collapseTimer){ clearTimeout(collapseTimer); collapseTimer = null; }
+            const isCompact = activeAlert.classList.contains('compact');
+            if(isCompact){
+              expandAlert();
               return;
             }
 
             // Collapse and offer undo
-            activeAlert.classList.add('collapsed');
+            activeAlert.classList.add('compact');
+            if(headline) headline.textContent = 'Marked unavailable';
             if(actionMessage) actionMessage.textContent = 'Marked unavailable.';
-            declineButton.querySelector('span').textContent = 'Expand';
+            const declineLabel = declineButton.querySelector('span');
+            if(declineLabel) declineLabel.textContent = 'Expand';
             showSnackbar();
 
             // auto-remove collapse after 6s (simulate sending state); allow undo
             collapseTimer = setTimeout(() => {
               hideSnackbar();
               collapseTimer = null;
-              // keep collapsed state but remove buttons to indicate finalised
-              activeAlert.classList.add('final');
-              if(actionMessage) actionMessage.textContent = 'Marked unavailable — saved.';
+              if(headline) headline.textContent = 'Marked unavailable';
+              if(actionMessage) actionMessage.textContent = 'Marked unavailable.';
             }, 6000);
           });
+
+          if(compactExpandButton){
+            compactExpandButton.addEventListener('click', function(e){
+              e.stopPropagation();
+              expandAlert();
+            });
+          }
+
+          if(activeAlert){
+            activeAlert.addEventListener('click', function(e){
+              if(activeAlert.classList.contains('compact') && e.target !== declineButton && e.target !== compactExpandButton){
+                expandAlert();
+              }
+            });
+          }
 
           if(snackbarUndo){
             snackbarUndo.addEventListener('click', function(){
               if(collapseTimer){ clearTimeout(collapseTimer); collapseTimer = null; }
-              if(activeAlert){
-                activeAlert.classList.remove('collapsed');
-                activeAlert.classList.remove('final');
-              }
-              hideSnackbar();
+              expandAlert();
               if(actionMessage) actionMessage.textContent = 'Undo — alert restored.';
-              if(declineButton) declineButton.querySelector('span').textContent = 'Can’t respond';
             });
           }
-        });
         }
 
         if(closeNav){
           closeNav.addEventListener('click', function(){ hideNavPanel(); if(actionMessage) actionMessage.textContent = 'Navigation closed.'; });
+        }
+        if(closeNavTop){
+          closeNavTop.addEventListener('click', function(){ hideNavPanel(); if(actionMessage) actionMessage.textContent = 'Navigation closed.'; });
         }
         if(openDirections){
           openDirections.addEventListener('click', function(){ hideNavPanel(); if(actionMessage) actionMessage.textContent = 'Opening directions in a new tab.'; });

@@ -124,6 +124,9 @@
   justify-content: space-between;
   background-color: rgba(255, 223, 223, 1);
   box-sizing: border-box;
+  overflow: hidden;
+  max-height: 500px;
+  transition: max-height 300ms ease, opacity 300ms ease, padding 300ms ease;
 }
 
 .respond-thq-text-elm12 {
@@ -564,13 +567,42 @@
 }
 .respond-nav-header { font-weight: 700; margin-bottom: 8px; }
 .respond-nav-body { display:flex; flex-direction: column; gap:8px; }
+.respond-nav-header { position: relative; }
+.respond-nav-close-top {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: white;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 999px;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(15,23,42,0.06);
+}
+.respond-nav-close-top:hover{ transform: translateY(-2px); }
 .respond-nav-map { width: 100%; max-width: 640px; }
 .respond-map-canvas { width: 100%; height: 160px; background: linear-gradient(180deg,#e9eef6,#dfeafc); border-radius: 8px; display:flex; align-items:center; justify-content:center; position:relative; box-shadow: inset 0 1px 0 rgba(255,255,255,0.6); }
 .respond-map-marker { width: 18px; height: 24px; background: radial-gradient(circle at 30% 30%, #fff 0 20%, #ff0000 21% 100%); border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; box-shadow: 0 2px 6px rgba(0,0,0,0.18); transform: translateY(-10px); }
 .respond-map-label { position: absolute; bottom: 8px; left: 12px; font-size: 12px; color: rgba(0,0,0,0.6); }
-.respond-nav-actions { display:flex; gap:12px; align-items:center; }
+.respond-nav-actions { display:flex; gap:12px; align-items:center; justify-content: space-between; width:100%; }
 .respond-nav-link { color: var(--dl-color-default-primary, #e53935); text-decoration:none; font-weight:600; }
-.respond-nav-close { background: transparent; border: none; color:#666; padding:8px 10px; cursor:pointer; }
+.respond-nav-close {
+  background: rgba(0,0,0,0.06);
+  border: 1px solid rgba(0,0,0,0.08);
+  color: #111;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 10px;
+  box-shadow: 0 6px 14px rgba(15,23,42,0.06);
+  transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+}
+.respond-nav-close:hover { transform: translateY(-2px); background: rgba(0,0,0,0.08); }
+.respond-nav-close:active { transform: translateY(0); box-shadow: inset 0 2px 6px rgba(0,0,0,0.06); }
 
 /* Accept pulse animation */
 .accept-pulse {
@@ -585,20 +617,84 @@
 }
 
 /* Compact state for active alert when user taps "Can't respond" */
-.respond-thq-active-alert-elm.compact { padding: 8px; background-color: rgba(255, 245, 245, 0.95); }
-.respond-thq-active-alert-elm.compact .respond-thq-buttons-elm { display: none; }
-.respond-thq-active-alert-elm.compact .respond-thq-body-elm { max-width: 220px; }
-.respond-thq-active-alert-elm.compact .respond-thq-text-elm13 { display: none; }
-
-/* Collapsed state animation for active alert */
-.respond-thq-active-alert-elm.collapsed {
+.respond-thq-active-alert-elm.compact {
   max-height: 72px;
-  overflow: hidden;
-  transition: max-height 300ms ease, opacity 300ms ease, padding 300ms ease;
-  padding: 8px;
+  padding: 8px 12px;
   opacity: 0.95;
+  background-color: rgba(255, 245, 245, 0.95);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  flex-wrap: nowrap;
+  cursor: pointer;
 }
-.respond-thq-active-alert-elm.final { opacity: 0.9; }
+.respond-thq-active-alert-elm.compact .respond-thq-top-section-elm,
+.respond-thq-active-alert-elm.compact .respond-thq-body-elm {
+  width: auto;
+  max-width: none;
+}
+.respond-thq-active-alert-elm.compact .respond-thq-text-elm12 {
+  white-space: nowrap;
+  font-size: 16px;
+  font-weight: 700;
+  color: rgba(87, 0, 0, 1);
+}
+.respond-thq-active-alert-elm.compact .respond-thq-text-elm14 {
+  font-size: 16px;
+  font-weight: 700;
+  align-self: auto;
+  flex: 1;
+}
+.respond-thq-active-alert-elm.compact .respond-thq-buttons-elm,
+.respond-thq-active-alert-elm.compact .respond-thq-text-elm13,
+.respond-thq-active-alert-elm.compact .respond-thq-frame11-elm {
+  display: none;
+}
+.respond-thq-active-alert-elm.compact .respond-thq-body-elm {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: auto;
+  max-width: none;
+  margin-left: auto;
+  gap: 6px;
+}
+.respond-thq-active-alert-elm.compact .respond-thq-text-elm14 {
+  font-size: 16px;
+  font-weight: 700;
+  flex: none;
+  align-self: auto;
+  white-space: nowrap;
+}
+.respond-thq-compact-expand-btn {
+  display: none;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(87, 0, 0, 0.08);
+  color: rgba(87, 0, 0, 1);
+  cursor: pointer;
+  padding: 0;
+  font-size: 18px;
+  line-height: 1;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+}
+.respond-thq-compact-expand-btn span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+.respond-thq-active-alert-elm.compact .respond-thq-compact-expand-btn {
+  display: inline-flex;
+}
 
 /* Snackbar undo */
 .respond-snackbar {
