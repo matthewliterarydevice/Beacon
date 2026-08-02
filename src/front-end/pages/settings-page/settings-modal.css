@@ -5,9 +5,10 @@
   display: none;
   align-items: center;
   justify-content: center;
-  padding: 16px;
+  padding: var(--modal-edge-gap, 16px);
   overflow-y: auto;
   z-index: 1000;
+  --modal-edge-gap: 16px;
 }
 
 .settings-modal-overlay.is-open {
@@ -17,24 +18,41 @@
 .settings-modal-card {
   width: min(100%, 420px);
   max-width: 420px;
-  max-height: calc(100vh - 32px);
+  max-height: calc(100vh - (var(--modal-edge-gap, 16px) * 2));
   background: #ffffff;
   border-radius: 20px;
   box-shadow: 0 18px 40px rgba(15, 23, 42, 0.2);
   padding: 24px;
   position: relative;
   overflow: auto;
+  margin: auto;
 }
 
 .settings-modal-close {
   position: absolute;
   top: 12px;
   right: 12px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border: none;
-  background: transparent;
-  font-size: 1.3rem;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.06);
+  font-size: 1.1rem;
+  line-height: 1;
   color: #475569;
   cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.settings-modal-close:hover {
+  background: rgba(15, 23, 42, 0.12);
+}
+
+.settings-modal-close:active {
+  transform: scale(0.95);
 }
 
 .settings-modal-card:focus-within {
@@ -43,9 +61,14 @@
 }
 
 @media (max-width: 480px) {
+  .settings-modal-overlay {
+    --modal-edge-gap: 12px;
+    padding: var(--modal-edge-gap);
+  }
+
   .settings-modal-card {
-    width: calc(100% - 24px);
-    max-height: calc(100vh - 24px);
+    width: calc(100% - (var(--modal-edge-gap) * 2));
+    max-height: calc(100vh - (var(--modal-edge-gap) * 2));
     padding: 18px;
     border-radius: 16px;
   }

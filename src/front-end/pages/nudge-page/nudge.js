@@ -9,26 +9,36 @@
  * not a reason to wait.
  *
  * Flow:
- *   Step 1: "Are they unresponsive?"
- *     Yes      -> escalate immediately (unresponsiveness alone is enough)
- *     Unsure   -> escalate immediately (unclear answers always escalate)
- *     No       -> continue to Step 2
- *
- *   Step 2: "Is their breathing slow, irregular, or has it stopped?"
+ *   Step 1: "Check the surroundings"
  *     Yes      -> escalate immediately
  *     Unsure   -> escalate immediately
- *     No       -> show a reassurance screen (Step 3) — do NOT force an
- *                 alert, but keep a manual "Get help now" escalation
- *                 option visible, since the person is not required to be
- *                 certain to still call for help.
+ *     No       -> continue to Step 2
+ *
+ *   Step 2: "Look for warning signs"
+ *     Yes      -> escalate immediately
+ *     Unsure   -> escalate immediately
+ *     No       -> continue to Step 3
+ *
+ *   Step 3: "Try to wake them"
+ *     Yes      -> escalate immediately
+ *     Unsure   -> escalate immediately
+ *     No       -> continue to Step 4
+ *
+ *   Step 4: "Check if they are breathing normally"
+ *     Yes      -> escalate immediately
+ *     Unsure   -> escalate immediately
+ *     No       -> show a final message encouraging the person to act at
+ *                 their own discretion and get help if needed.
  *
  *   Cancel is always available and returns to the Emergency page.
  */
 
 const NUDGE_STEPS = {
-  UNRESPONSIVE: 'unresponsive',
+  SURROUNDINGS: 'surroundings',
+  WARNING_SIGNS: 'warningSigns',
+  WAKE: 'wake',
   BREATHING: 'breathing',
-  REASSURANCE: 'reassurance',
+  MESSAGE: 'message',
 };
 
 function initNudgePage(rootDocument = document, rootWindow = window) {
@@ -40,8 +50,6 @@ function initNudgePage(rootDocument = document, rootWindow = window) {
   const cancelButton = rootDocument.getElementById('cancelButton');
   const answerRow = rootDocument.getElementById('nudgeAnswerRow');
   const footerRow = rootDocument.getElementById('nudgeFooterRow');
-  const reassuranceBlock = rootDocument.getElementById('nudgeReassuranceBlock');
-  const getHelpNowButton = rootDocument.getElementById('getHelpNowButton');
   const questionBlock = rootDocument.getElementById('nudgeQuestionBlock');
 
   if (!questionText || !yesButton || !noButton || !unsureButton) {
@@ -49,13 +57,25 @@ function initNudgePage(rootDocument = document, rootWindow = window) {
   }
 
   const STEP_CONTENT = {
-    [NUDGE_STEPS.UNRESPONSIVE]: {
-      question: 'Are they unresponsive?',
-      instructions: 'Safely approach the person, firmly tap their shoulder, and loudly ask, "Are you okay?"',
+    [NUDGE_STEPS.SURROUNDINGS]: {
+      question: 'Check the surroundings',
+      instructions: 'Look for anything nearby that might help: pills, bottles, needles, or signs of a fall.',
+    },
+    [NUDGE_STEPS.WARNING_SIGNS]: {
+      question: 'Look for warning signs',
+      instructions: 'Watch for blue lips, very pale skin, unusual sleepiness, a limp body, or no response.',
+    },
+    [NUDGE_STEPS.WAKE]: {
+      question: 'Try to wake them',
+      instructions: 'Say their name and gently tap or shake their shoulder.',
     },
     [NUDGE_STEPS.BREATHING]: {
-      question: 'Is their breathing slow, irregular, or has it stopped?',
-      instructions: 'Watch their chest for 10 seconds. Normal breathing is steady, roughly one breath every 3–5 seconds.',
+      question: 'Check if they are breathing normally',
+      instructions: 'Watch their chest for 10 seconds. Normal breathing is steady and regular.',
+    },
+    [NUDGE_STEPS.MESSAGE]: {
+      question: 'If you are unsure, act at your own discretion',
+      instructions: 'If anything feels serious or you are not sure, get help right away.',
     },
   };
 
@@ -79,20 +99,19 @@ function initNudgePage(rootDocument = document, rootWindow = window) {
     if (questionBlock) questionBlock.hidden = false;
     if (answerRow) answerRow.hidden = false;
     if (footerRow) footerRow.hidden = false;
-    if (reassuranceBlock) reassuranceBlock.hidden = true;
     renderStep(step);
     currentStep = step;
   }
 
-  function showReassuranceStep() {
-    if (questionBlock) questionBlock.hidden = true;
+  function showMessageStep() {
+    if (questionBlock) questionBlock.hidden = false;
     if (answerRow) answerRow.hidden = true;
-    if (footerRow) footerRow.hidden = true;
-    if (reassuranceBlock) reassuranceBlock.hidden = false;
-    currentStep = NUDGE_STEPS.REASSURANCE;
+    if (footerRow) footerRow.hidden = false;
+    renderStep(NUDGE_STEPS.MESSAGE);
+    currentStep = NUDGE_STEPS.MESSAGE;
   }
 
-  let currentStep = NUDGE_STEPS.UNRESPONSIVE;
+  let currentStep = NUDGE_STEPS.SURROUNDINGS;
 
   yesButton.addEventListener('click', () => {
     // "Yes" always means the concerning answer, regardless of which
@@ -101,13 +120,23 @@ function initNudgePage(rootDocument = document, rootWindow = window) {
   });
 
   noButton.addEventListener('click', () => {
-    if (currentStep === NUDGE_STEPS.UNRESPONSIVE) {
+    if (currentStep === NUDGE_STEPS.SURROUNDINGS) {
+      showQuestionStep(NUDGE_STEPS.WARNING_SIGNS);
+      return;
+    }
+
+    if (currentStep === NUDGE_STEPS.WARNING_SIGNS) {
+      showQuestionStep(NUDGE_STEPS.WAKE);
+      return;
+    }
+
+    if (currentStep === NUDGE_STEPS.WAKE) {
       showQuestionStep(NUDGE_STEPS.BREATHING);
       return;
     }
 
     if (currentStep === NUDGE_STEPS.BREATHING) {
-      showReassuranceStep();
+      showMessageStep();
     }
   });
 
@@ -123,13 +152,7 @@ function initNudgePage(rootDocument = document, rootWindow = window) {
     });
   }
 
-  if (getHelpNowButton) {
-    getHelpNowButton.addEventListener('click', () => {
-      escalate();
-    });
-  }
-
-  showQuestionStep(NUDGE_STEPS.UNRESPONSIVE);
+  showQuestionStep(NUDGE_STEPS.SURROUNDINGS);
 }
 
 if (typeof window !== 'undefined' && typeof document !== 'undefined') {
