@@ -4,6 +4,6 @@
   "phone": "",
   "username": "avery2",
   "email": "a",
-  "password": "a",
-  "createdAt": "2026-07-30T03:25:25.991Z"
+  "createdAt": "2026-07-30T03:25:25.991Z",
+  "passwordHash": "6874f8ede55212646eec9e8839425f58:41720629b8aa723865b5672872cf8361fecf734b31982fc752f8c1948046fe35e4a97e51a54342ec02223d3950ba320205f46bd06f0ad192f1e6d44aa75a302e"
 }

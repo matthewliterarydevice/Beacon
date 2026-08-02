@@ -45,11 +45,30 @@
   justify-content: center;
   background-color: var(--dl-color-default-primary);
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+  position: relative;
+  overflow: hidden;
+  border: none;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .emergency-thq-paragraphcontainer-elm:hover {
   background-color: #0047ab;
+}
+
+.emergency-thq-paragraphcontainer-elm.is-holding {
+  transform: scale(0.97);
+}
+
+.emergency-hold-progress {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  --hold-progress: 0%;
+  background: conic-gradient(rgba(255, 255, 255, 0.35) var(--hold-progress), transparent 0%);
 }
 
 .emergency-thq-text-elm2 {
@@ -110,38 +129,6 @@
 
 .emergency-link {
   display: contents;
-}
-
-.emergency-container2 {
-  right: 50px;
-  border: 1px solid #ffffff5c;
-  bottom: 30px;
-  display: flex;
-  z-index: 22;
-  position: fixed;
-  box-shadow: 5px 5px 10px 0px rgba(31, 31, 31, 0.4);
-  min-height: auto;
-  align-items: center;
-  padding-top: 8px;
-  padding-left: 12px;
-  border-radius: 8px;
-  padding-right: 12px;
-  padding-bottom: 8px;
-  backdrop-filter: blur(6px);
-  background-color: rgba(41, 41, 41, 0.41);
-}
-
-.emergency-icon1 {
-  width: 24px;
-  margin-right: 4px;
-}
-
-.emergency-text {
-  color: white;
-  font-size: 13px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 24px;
 }
 
 @media (max-width: 600px) {

@@ -89,6 +89,13 @@ test('POST /api/profile updates editable account details', () => {
   assert.equal(updated.name, 'Avery Updated');
   assert.equal(updated.email, 'avery.updated@example.com');
   assert.equal(updated.username, 'avery-updated');
-  assert.equal(updated.password, 'new-secret');
   assert.equal(updated.phone, '999-000-1111');
+  // The password must never be echoed back, hashed or otherwise.
+  assert.equal(updated.password, undefined);
+  assert.equal(updated.passwordHash, undefined);
+
+  const savedRecord = JSON.parse(fs.readFileSync(userFile, 'utf8'));
+  assert.equal(savedRecord.password, undefined);
+  assert.notEqual(savedRecord.passwordHash, undefined);
+  assert.notEqual(savedRecord.passwordHash, 'new-secret');
 });

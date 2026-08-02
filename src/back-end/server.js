@@ -1,12 +1,17 @@
-http = require('http');
+const http = require('http');
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 
 const DEFAULT_PORT = process.env.PORT || 3000;
 const DEFAULT_HOST = process.env.HOST || '127.0.0.1';
 const FRONT_END_ROOT = path.join(__dirname, '..');
 const USERS_FOLDER = path.join(__dirname, 'data', 'users');
 const INVITE_CODES_FILE = path.join(__dirname, 'data', 'invite-codes.json');
+
+const MIN_PASSWORD_LENGTH = 6;
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const SCRYPT_KEY_LENGTH = 64;
 
 const FILE_TYPES = {
   '.html': 'text/html',
@@ -40,6 +45,46 @@ function safeUserId(input) {
 function normalizeValue(value) {
   return String(value || '').trim().toLowerCase();
 }
+
+// ---- Password hashing -------------------------------------------------
+// Passwords are never stored or returned in plaintext. We use Node's
+// built-in scrypt (no extra dependency needed) with a random salt per
+// user, stored as "salt:hash" in the passwordHash field.
+
+function hashPassword(plainPassword) {
+  const salt = crypto.randomBytes(16).toString('hex');
+  const derivedKey = crypto.scryptSync(plainPassword, salt, SCRYPT_KEY_LENGTH);
+  return `${salt}:${derivedKey.toString('hex')}`;
+}
+
+function verifyPassword(plainPassword, storedHash) {
+  if (!storedHash || typeof storedHash !== 'string' || !storedHash.includes(':')) {
+    return false;
+  }
+
+  const [salt, hashHex] = storedHash.split(':');
+  const derivedKey = crypto.scryptSync(plainPassword, salt, SCRYPT_KEY_LENGTH);
+  const storedKey = Buffer.from(hashHex, 'hex');
+
+  if (storedKey.length !== derivedKey.length) {
+    return false;
+  }
+
+  return crypto.timingSafeEqual(storedKey, derivedKey);
+}
+
+// Strip anything password-related before a user record ever leaves the
+// server, whether it's a fresh signup, a login, or a profile update.
+function sanitizeUserRecord(record) {
+  const { password, passwordHash, ...safeRecord } = record;
+  return safeRecord;
+}
+
+function isValidEmail(email) {
+  return EMAIL_PATTERN.test(email);
+}
+
+// ---- User lookup helpers -----------------------------------------------
 
 function findUserFilePathByUsername(username, excludeFilePath) {
   if (!username || !fs.existsSync(USERS_FOLDER)) {
@@ -132,6 +177,8 @@ function findUserFilePathByIdentity({ currentEmail, currentUsername, currentPhon
   return null;
 }
 
+// ---- Route handlers ------------------------------------------------------
+
 function updateResponderProfile(request, response) {
   let body = '';
   request.on('data', (chunk) => {
@@ -154,6 +201,14 @@ function updateResponderProfile(request, response) {
         return sendJson(response, 400, { error: 'Current email, username, or phone is required to update profile.' });
       }
 
+      if (email && !isValidEmail(email)) {
+        return sendJson(response, 400, { error: 'Please enter a valid email address.' });
+      }
+
+      if (newPassword && newPassword.length < MIN_PASSWORD_LENGTH) {
+        return sendJson(response, 400, { error: `New password must be at least ${MIN_PASSWORD_LENGTH} characters.` });
+      }
+
       let filePath = findUserFilePathByIdentity({ currentEmail, currentUsername, currentPhone });
       if (!filePath) {
         filePath = findUserFilePathByIdentity({
@@ -174,8 +229,9 @@ function updateResponderProfile(request, response) {
         username: username || existing.username,
         email: email || existing.email,
         phone: phone || existing.phone,
-        password: newPassword || existing.password,
+        passwordHash: newPassword ? hashPassword(newPassword) : existing.passwordHash,
       };
+      delete updated.password; // migrate away from any legacy plaintext field
 
       const duplicateUsernamePath = findUserFilePathByUsername(username, filePath);
       if (duplicateUsernamePath) {
@@ -183,7 +239,7 @@ function updateResponderProfile(request, response) {
       }
 
       fs.writeFileSync(filePath, JSON.stringify(updated, null, 2));
-      sendJson(response, 200, updated);
+      sendJson(response, 200, sanitizeUserRecord(updated));
     } catch (error) {
       sendJson(response, 400, { error: 'Could not update profile.' });
     }
@@ -240,6 +296,14 @@ function saveResponder(request, response) {
         return sendJson(response, 400, { error: 'Invite code, name, email, and password are required.' });
       }
 
+      if (!isValidEmail(email)) {
+        return sendJson(response, 400, { error: 'Please enter a valid email address.' });
+      }
+
+      if (password.length < MIN_PASSWORD_LENGTH) {
+        return sendJson(response, 400, { error: `Password must be at least ${MIN_PASSWORD_LENGTH} characters.` });
+      }
+
       let validInviteCodes;
       try {
         validInviteCodes = getValidInviteCodes();
@@ -260,27 +324,40 @@ function saveResponder(request, response) {
         phone,
         username: username || email,
         email,
-        password,
+        passwordHash: hashPassword(password),
         createdAt: new Date().toISOString(),
       };
 
-      fs.mkdirSync(USERS_FOLDER, { recursive: true });
-
       const fileName = `${safeUserId(record.username || email || phone || name)}.json`;
       const filePath = path.join(USERS_FOLDER, fileName);
+      fs.mkdirSync(USERS_FOLDER, { recursive: true });
 
-      if (fs.existsSync(filePath)) {
-        return sendJson(response, 400, { error: 'That username is already taken.' });
-      }
+      // If an account with this identity already exists, treat this as a
+      // login attempt rather than a hard failure — resubmitting the signup
+      // form (e.g. a double-tap, or a returning user) should feel seamless.
+      const existingFilePath = fs.existsSync(filePath)
+        ? filePath
+        : findUserFilePathByUsername(normalizeValue(record.username));
 
-      const duplicateUserPath = findUserFilePathByUsername(normalizeValue(record.username));
-      if (duplicateUserPath) {
-        return sendJson(response, 400, { error: 'That username is already taken.' });
+      if (existingFilePath) {
+        const existingRecord = JSON.parse(fs.readFileSync(existingFilePath, 'utf8'));
+        const passwordMatches = existingRecord.passwordHash
+          ? verifyPassword(password, existingRecord.passwordHash)
+          : existingRecord.password === password;
+
+        if (!passwordMatches) {
+          return sendJson(response, 400, { error: 'That username is already taken.' });
+        }
+
+        const responseBody = sanitizeUserRecord(existingRecord);
+        responseBody.action = 'login';
+        return sendJson(response, 200, responseBody);
       }
 
       fs.writeFileSync(filePath, JSON.stringify(record, null, 2));
-      record.action = 'signup';
-      sendJson(response, 200, record);
+      const responseBody = sanitizeUserRecord(record);
+      responseBody.action = 'signup';
+      sendJson(response, 200, responseBody);
     } catch (error) {
       sendJson(response, 400, { error: 'Could not read signup data.' });
     }
@@ -318,14 +395,27 @@ function loginResponder(request, response) {
         .find((record) => {
           const loginEmail = String(record.email || '').trim();
           const loginUsername = String(record.username || '').trim();
-          return (loginEmail === email || loginUsername === username || loginUsername === email) && record.password === password;
+          const identityMatches = loginEmail === email || loginUsername === username || loginUsername === email;
+          if (!identityMatches) {
+            return false;
+          }
+
+          // Support both hashed accounts (current) and any legacy plaintext
+          // accounts that haven't been migrated yet.
+          if (record.passwordHash) {
+            return verifyPassword(password, record.passwordHash);
+          }
+
+          return record.password === password;
         });
 
       if (!matchedUser) {
         return sendJson(response, 401, { error: 'Invalid username or password.' });
       }
 
-      sendJson(response, 200, { ...matchedUser, action: 'login' });
+      const responseBody = sanitizeUserRecord(matchedUser);
+      responseBody.action = 'login';
+      sendJson(response, 200, responseBody);
     } catch (error) {
       sendJson(response, 400, { error: 'Could not read login data.' });
     }
@@ -419,6 +509,10 @@ module.exports = {
   createServer,
   startServer,
   safeUserId,
+  hashPassword,
+  verifyPassword,
+  sanitizeUserRecord,
+  isValidEmail,
   findUserFilePathByIdentity,
   updateResponderProfile,
   saveResponder,

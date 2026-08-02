@@ -236,6 +236,7 @@ test('POST /api/signup returns a descriptive error when the invite code list can
         name: 'Avery',
         phone: '123-456-7890',
         username: 'avery',
+        email: 'avery@example.com',
         password: 'secret123',
       }));
       req.end();
@@ -319,6 +320,7 @@ test('POST /api/profile updates editable account details', async () => {
 
       req.on('error', reject);
       req.write(JSON.stringify({
+        currentEmail: 'avery@example.com',
         phone: '123-456-7890',
         name: 'Avery Updated',
         username: 'avery-updated',
@@ -333,7 +335,15 @@ test('POST /api/profile updates editable account details', async () => {
     assert.equal(payload.name, 'Avery Updated');
     assert.equal(payload.email, 'avery.updated@example.com');
     assert.equal(payload.username, 'avery-updated');
-    assert.equal(payload.password, 'new-secret');
+    // The password must never be echoed back, hashed or otherwise.
+    assert.equal(payload.password, undefined);
+    assert.equal(payload.passwordHash, undefined);
+
+    const savedFile = path.join(usersDir, 'avery.json');
+    const savedRecord = JSON.parse(fs.readFileSync(savedFile, 'utf8'));
+    assert.equal(savedRecord.password, undefined);
+    assert.notEqual(savedRecord.passwordHash, undefined);
+    assert.notEqual(savedRecord.passwordHash, 'new-secret');
   } finally {
     serverProcess.kill('SIGTERM');
     await new Promise((resolve) => setTimeout(resolve, 200));
@@ -383,6 +393,7 @@ test('POST /api/login authenticates a stored responder profile', async () => {
         name: 'Avery',
         phone: '123-456-7890',
         username: 'avery',
+        email: 'avery@example.com',
         password: 'secret123',
       }));
       req.end();
@@ -464,6 +475,7 @@ test('POST /api/signup saves a responder profile', async () => {
         name: 'Avery',
         phone: '123-456-7890',
         username: 'avery',
+        email: 'avery@example.com',
         password: 'secret123',
       }));
       req.end();
@@ -479,6 +491,12 @@ test('POST /api/signup saves a responder profile', async () => {
     assert.equal(fs.existsSync(savedFile), true);
     const savedPayload = JSON.parse(fs.readFileSync(savedFile, 'utf8'));
     assert.equal(savedPayload.phone, '123-456-7890');
+    // Password must be stored hashed, never in plaintext, and never returned.
+    assert.equal(payload.password, undefined);
+    assert.equal(payload.passwordHash, undefined);
+    assert.equal(savedPayload.password, undefined);
+    assert.notEqual(savedPayload.passwordHash, undefined);
+    assert.notEqual(savedPayload.passwordHash, 'secret123');
 
     // Call the signup endpoint again with the same phone — should be treated as a login
     const response2 = await new Promise((resolve, reject) => {
@@ -501,6 +519,7 @@ test('POST /api/signup saves a responder profile', async () => {
         name: 'Avery',
         phone: '123-456-7890',
         username: 'avery',
+        email: 'avery@example.com',
         password: 'secret123',
       }));
       req2.end();

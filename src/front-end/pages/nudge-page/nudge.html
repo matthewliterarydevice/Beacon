@@ -53,23 +53,27 @@
                container query units, so it can never collide with the
                card below or the header above. -->
           <div class="nudge-thq-circle-stage-elm">
-            <a href="../help-page/help.html" id="holdForHelpButton" class="nudge-link">
-              <div class="nudge-thq-paragraphcontainer-elm">
-                <span class="nudge-thq-text-elm11 Header2">Hold for help</span>
-                <span class="nudge-thq-text-elm12 Subtext">
-                  Call 911 + alert nearby responders
-                </span>
-              </div>
-            </a>
+            <button
+              type="button"
+              id="holdForHelpButton"
+              class="nudge-thq-paragraphcontainer-elm"
+              aria-label="Hold for help. Calls 911 and alerts nearby responders. Press and hold, or press and hold Enter."
+            >
+              <div id="holdForHelpProgress" class="nudge-hold-progress" aria-hidden="true"></div>
+              <span class="nudge-thq-text-elm11 Header2">Hold for help</span>
+              <span class="nudge-thq-text-elm12 Subtext">
+                Call 911 + alert nearby responders
+              </span>
+            </button>
           </div>
 
           <div class="nudge-thq-frame27-elm">
-            <div class="nudge-thq-frame29-elm">
-              <span class="nudge-thq-text-elm13 Header2">
+            <div class="nudge-thq-frame29-elm" id="nudgeQuestionBlock">
+              <span class="nudge-thq-text-elm13 Header2" id="nudgeQuestionText">
                 Are they unresponsive?
               </span>
             </div>
-            <div class="nudge-thq-frame32-elm">
+            <div class="nudge-thq-frame32-elm" id="nudgeAnswerRow">
               <button id="yesButton" class="nudge-thq-frame30-elm">
                 <span class="nudge-thq-text-elm14">Yes</span>
               </button>
@@ -77,37 +81,55 @@
                 <span class="nudge-thq-text-elm15">No</span>
               </button>
             </div>
-            <span class="nudge-thq-text-elm16">
+            <span class="nudge-thq-text-elm16" id="nudgeQuestionBlockInstructions">
               <span class="nudge-thq-text-elm17">To check:</span>
               <br />
               <span></span>
               <br />
-              <span>
+              <span id="nudgeCheckInstructions">
                 Safely approach the person, firmly tap their shoulder, and
                 loudly ask, "Are you okay?"
               </span>
             </span>
-            <div class="nudge-thq-frame33-elm">
+            <div class="nudge-thq-frame33-elm" id="nudgeFooterRow">
               <span id="unsureButton" class="nudge-thq-text-elm20 Text">I'm unsure</span>
               <a href="../emergency-page/emergency.html" id="cancelButton" class="nudge-thq-text-elm21 Text">Cancel</a>
+            </div>
+
+            <div class="nudge-thq-reassurance-elm" id="nudgeReassuranceBlock" hidden>
+              <span class="nudge-thq-text-elm13 Header2">
+                Good — stay with them for now
+              </span>
+              <span class="nudge-thq-text-elm16" style="font-weight: 400;">
+                Keep watching their breathing and try to keep them awake. If
+                anything changes, or you're not sure anymore, you can still
+                get help any time.
+              </span>
+              <button type="button" id="getHelpNowButton" class="nudge-thq-frame30-elm" style="width: 100%; margin-top: 8px;">
+                <span class="nudge-thq-text-elm14">Get help now</span>
+              </button>
+              <a href="../emergency-page/emergency.html" class="nudge-thq-text-elm21 Text" style="margin-top: 8px;">Back to Emergency</a>
             </div>
           </div>
         </div>
 
       </div>
     </div>
+    <script src="../../utils/hold-to-confirm.js"></script>
+    <script src="./nudge.js"></script>
     <script>
-      document.getElementById('yesButton').addEventListener('click', function () {
-        console.log('Yes (unresponsive) pressed');
-      });
-      document.getElementById('noButton').addEventListener('click', function () {
-        console.log('No (responsive) pressed');
-      });
-      document.getElementById('unsureButton').addEventListener('click', function () {
-        console.log("I'm unsure pressed");
-      });
-      document.getElementById('cancelButton').addEventListener('click', function () {
-        console.log('Cancel pressed');
+      document.addEventListener('DOMContentLoaded', function () {
+        initHoldToConfirm({
+          button: document.getElementById('holdForHelpButton'),
+          progressLayer: document.getElementById('holdForHelpProgress'),
+          labelElement: document.querySelector('.nudge-thq-text-elm11'),
+          durationMs: 800,
+          holdingLabel: 'Keep holding…',
+          idleLabel: 'Hold for help',
+          onConfirm: function () {
+            window.location.href = '../help-page/help.html';
+          },
+        });
       });
     </script>
   </body>

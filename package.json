@@ -2,15 +2,12 @@
   "name": "beacon",
   "version": "1.0.0",
   "private": true,
-  "dependencies": {
-    "parcel-bundler": "^1.6.1",
-    "next": "^12.1.10",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
-  },
+  "description": "Beacon — coordinated overdose response prototype (bystander alerts + trained responder network).",
   "scripts": {
     "start": "node src/back-end/server.js",
-    "launch": "node scripts/launcher.js"
+    "launch": "node scripts/launcher.js",
+    "test": "node --test src/back-end/__tests__/*.test.js"
   },
+  "dependencies": {},
   "devDependencies": {}
 }

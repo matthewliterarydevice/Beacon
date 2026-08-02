@@ -51,14 +51,18 @@
           <span class="emergency-thq-text-elm1 Header">
             Emergency Assistance
           </span>
-          <a href="../help-page/help.html" id="holdForHelpButton" class="emergency-link">
-            <div class="emergency-thq-paragraphcontainer-elm">
-              <span class="emergency-thq-text-elm2 Header2">Hold for help</span>
-              <span class="emergency-thq-text-elm3 Subtext">
-                Call 911 + alert nearby responders
-              </span>
-            </div>
-          </a>
+          <button
+            type="button"
+            id="holdForHelpButton"
+            class="emergency-thq-paragraphcontainer-elm"
+            aria-label="Hold for help. Calls 911 and alerts nearby responders. Press and hold, or press and hold Enter."
+          >
+            <div id="holdForHelpProgress" class="emergency-hold-progress" aria-hidden="true"></div>
+            <span class="emergency-thq-text-elm2 Header2">Hold for help</span>
+            <span class="emergency-thq-text-elm3 Subtext">
+              Call 911 + alert nearby responders
+            </span>
+          </button>
           <div class="emergency-thq-frame1-elm">
             <a href="../nudge-page/nudge.html" id="notSureButton" class="emergency-link emergency-link-text">
               <span class="emergency-thq-text-elm4 Subtext">
@@ -73,12 +77,20 @@
         
       </div>
     </div>
+    <script src="../../utils/hold-to-confirm.js"></script>
     <script>
-      document.getElementById('holdForHelpButton').addEventListener('click', function () {
-        console.log('Hold for help pressed');
-      });
-      document.getElementById('notSureButton').addEventListener('click', function () {
-        console.log('Not sure it\'s an overdose pressed');
+      document.addEventListener('DOMContentLoaded', function () {
+        initHoldToConfirm({
+          button: document.getElementById('holdForHelpButton'),
+          progressLayer: document.getElementById('holdForHelpProgress'),
+          labelElement: document.querySelector('.emergency-thq-text-elm2'),
+          durationMs: 800,
+          holdingLabel: 'Keep holding…',
+          idleLabel: 'Hold for help',
+          onConfirm: function () {
+            window.location.href = '../help-page/help.html';
+          },
+        });
       });
     </script>
     <nav class="bottom-nav">

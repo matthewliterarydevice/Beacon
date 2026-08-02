@@ -77,11 +77,37 @@
   justify-content: center;
   background-color: var(--dl-color-default-primary);
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+  position: relative;
+  overflow: hidden;
+  border: none;
+  touch-action: none; /* prevent scroll/gesture interference while holding */
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .nudge-thq-paragraphcontainer-elm:hover {
   background-color: #0047ab;
+}
+
+.nudge-thq-paragraphcontainer-elm.is-holding {
+  transform: scale(0.97);
+}
+
+/* Radial fill that grows clockwise from 0% to 100% while the button is
+   held, giving clear visual feedback of how close the hold is to
+   confirming — and it resets to 0 immediately if released early. */
+.nudge-hold-progress {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  --hold-progress: 0%;
+  background: conic-gradient(rgba(255, 255, 255, 0.35) var(--hold-progress), transparent 0%);
+}
+
+.nudge-thq-paragraphcontainer-elm.is-holding .nudge-hold-progress {
+  transition: none; /* driven frame-by-frame in JS, no CSS easing fighting it */
 }
 
 .nudge-thq-text-elm11 {
@@ -233,6 +259,14 @@
   width: 100%;
 }
 
+.nudge-thq-reassurance-elm {
+  gap: clamp(8px, 1.5vh, 16px);
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+}
+
 .nudge-thq-text-elm20 {
   color: var(--dl-color-typography-muted);
   height: auto;
@@ -249,38 +283,6 @@
   line-height: 1.4 !important;
   font-size: clamp(12px, 1.6vh, 14px) !important;
   cursor: pointer;
-}
-
-.nudge-container2 {
-  right: 50px;
-  border: 1px solid #ffffff5c;
-  bottom: 30px;
-  display: flex;
-  z-index: 22;
-  position: fixed;
-  box-shadow: 5px 5px 10px 0px rgba(31, 31, 31, 0.4);
-  min-height: auto;
-  align-items: center;
-  padding-top: 8px;
-  padding-left: 12px;
-  border-radius: 8px;
-  padding-right: 12px;
-  padding-bottom: 8px;
-  backdrop-filter: blur(6px);
-  background-color: rgba(41, 41, 41, 0.41);
-}
-
-.nudge-icon1 {
-  width: 24px;
-  margin-right: 4px;
-}
-
-.nudge-text3 {
-  color: white;
-  font-size: 13px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 24px;
 }
 
 @media (max-width: 479px) {

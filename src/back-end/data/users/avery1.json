@@ -4,6 +4,6 @@
   "phone": "",
   "username": "avery1",
   "email": "avery@gmail.com",
-  "password": "123",
-  "createdAt": "2026-07-30T03:03:51.747Z"
+  "createdAt": "2026-07-30T03:03:51.747Z",
+  "passwordHash": "452b5bafe8fb2cb092fe947525e9b4df:f7184a3fdeeb59d9b02560f10d26254c65bcc3d50b6b0965eec8362417ef2962ca129e28a8c8154c570fa5815c8e5256c754ea2f6ac58a31a432488bd698815a"
 }

@@ -12,11 +12,12 @@
   width: 100%;
   height: auto;
   display: flex;
-  padding: 72px 48px;
+  padding: clamp(32px, 8vh, 72px) clamp(20px, 6vw, 48px) calc(clamp(24px, 6vh, 48px) + 64px + env(safe-area-inset-bottom, 0px));
   align-items: center;
   flex-shrink: 0;
   flex-direction: column;
   background-color: var(--dl-color-default-quickresponseicon);
+  box-sizing: border-box;
 }
 
 .learn-thq-card-elm1 {
@@ -37,21 +38,23 @@
 
 .learn-thq-text-elm10 {
   color: rgba(0, 0, 0, 1);
-  width: 326px;
+  width: 100%;
+  max-width: 328px;
   height: auto;
-  font-size: 40px;
+  font-size: clamp(28px, 8vw, 40px);
   font-style: Medium;
   text-align: center;
   font-family: Inter;
   font-weight: 500;
-  line-height: normal;
+  line-height: 1.15;
   font-stretch: normal;
   text-decoration: none;
 }
 
 .learn-thq-text-elm11 {
   color: var(--dl-color-typography-muted);
-  width: 326px;
+  width: 100%;
+  max-width: 328px;
   height: auto;
   font-size: 16px;
   font-style: Regular;
@@ -65,7 +68,8 @@
 
 .learn-thq-text-elm12 {
   color: var(--dl-color-default-primary);
-  width: 326px;
+  width: 100%;
+  max-width: 328px;
   height: auto;
   font-size: 16px;
   font-weight: 600;
@@ -81,7 +85,8 @@
 
 .learn-thq-table-elm {
   gap: 17px;
-  width: 328px;
+  width: 100%;
+  max-width: 328px;
   display: flex;
   align-items: center;
   flex-shrink: 0;
@@ -90,7 +95,8 @@
 
 .learn-thq-textchunk-images {
   gap: 16px;
-  width: 328px;
+  width: 100%;
+  max-width: 328px;
   display: flex;
   align-items: flex-start;
   flex-shrink: 0;
@@ -109,7 +115,8 @@
 
 .learn-thq-textchunk-links {
   gap: 16px;
-  width: 328px;
+  width: 100%;
+  max-width: 328px;
   display: flex;
   align-items: flex-start;
   flex-shrink: 0;
@@ -118,7 +125,8 @@
 
 .learn-thq-text-elm14 {
   color: rgba(0, 0, 0, 1);
-  width: 327px;
+  width: 100%;
+  max-width: 328px;
   height: auto;
   font-size: 24px;
   font-style: Semi Bold;
@@ -132,7 +140,8 @@
 
 .learn-thq-text-elm15 {
   color: rgba(0, 0, 0, 1);
-  width: 327px;
+  width: 100%;
+  max-width: 328px;
   height: auto;
   font-size: 16px;
   font-style: Regular;
@@ -160,38 +169,6 @@
 
 .learn-link {
   display: contents;
-}
-
-.learn-container2 {
-  right: 50px;
-  border: 1px solid #ffffff5c;
-  bottom: 30px;
-  display: flex;
-  z-index: 22;
-  position: fixed;
-  box-shadow: 5px 5px 10px 0px rgba(31, 31, 31, 0.4);
-  min-height: auto;
-  align-items: center;
-  padding-top: 8px;
-  padding-left: 12px;
-  border-radius: 8px;
-  padding-right: 12px;
-  padding-bottom: 8px;
-  backdrop-filter: blur(6px);
-  background-color: rgba(41, 41, 41, 0.41);
-}
-
-.learn-icon1 {
-  width: 24px;
-  margin-right: 4px;
-}
-
-.learn-text {
-  color: white;
-  font-size: 13px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 24px;
 }
 
 .bottom-nav {
